@@ -1,0 +1,34 @@
+.definition{ position:relative; padding: 10px 5px 10px 5px; margin-top: 10px;
+			border-top: 1px solid #808080; overflow: visible;
+			}
+			.definition:before{ content:  attr(category);
+			position: absolute;left: 10px; font-size: 9px; color: #808080; 
+			top: -10px; display: inline-block; background-color: #fff;padding: 0px 4px;
+			}
+			
+.card{ height: 35px; width: 43px; padding: 1px; position: relative;border: 1px solid transparent;
+display: inline-block; margin: 2px; text-align: center; overflow: visible;
+}
+.card:hover{ border-color: #87CEEB;  border-radius: 5px; cursor: pointer;}
+.card-head{ height:22px; width: 100%;}
+.card-body{ height: 12px; font-size: 10px; line-height: 11px;}
+.card img{  width: 20px; height: 20px;}
+.card .ColorRect{width: 20px; height: 20px; display: inline-block; color: #fff;}
+.definition .number {
+    background-color: transparent;
+    border-radius: 0px;
+    color: #F56C6C; top: -5px; right: 2px;
+	position: absolute;
+	
+	}
+	.head [class*=el-icon-] {
+		color: steelblue;
+		font-size: 24px;
+		cursor: pointer;
+	}
+	 .DashboardTitle {
+	    color: steelblue;
+	    font-size: larger;
+	    font-weight: bold;
+	 
+	}

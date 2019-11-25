@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="http://cvpmdsip03/tools/element-ui/lib/theme-chalk/index.css">
+
+		<title>
+			Flow chart
+		</title>
+		<style type="text/css">
+			* {
+				padding: 0px;
+				margin: 0px;
+
+				font-family: arial;
+				box-sizing: border-box;
+				overflow: hidden;
+			}
+
+			.container {
+				position: relative;
+				width: 100vw;
+				height: 100vh;
+			}
+
+			.head {
+				height: 40px;
+				position: absolute;
+				top: 0px;
+
+				width: 100%;
+				border-bottom: 1px solid #000;
+			}
+
+			.body {
+				top: 40px;
+				position: absolute;
+				bottom: 0px;
+				height: auto;
+				right: 0px;
+				left: 200px;
+			}
+
+			.nav {
+				top: 40px;
+				position: absolute;
+				bottom: 0px;
+				height: auto;
+				width: 200px;
+				border-right: 1px solid #000;
+				left: 0px;
+			}
+
+
+			.element {
+				cursor: pointer;
+			}
+
+			.tag {
+				display: none;
+				min-width: 50px;
+				min-height: 30px;
+				border: 1px solid #555;
+				position: absolute;
+				left: 1300px;
+				top: 30px;
+				background-color: #555;
+				color: #fff;
+				text-align: center;
+				padding: 5px 3px;
+				border-radius: 6px;
+				font-size: .8em;
+				z-index: 1000;
+				overflow: visible
+			}
+
+			.tag:before,
+			.tag:after {
+				content: "";
+				display: block;
+				border-width: 1px;
+				position: absolute;
+				bottom: -20px;
+				left: 20px;
+				border-style: solid dashed dashed;
+				border-color: #555 transparent transparent;
+				font-size: 0;
+				line-height: 0;
+				border-width: 10px;
+				z-index: 1001;
+			}
+
+			.tag:after {
+				bottom: -19px;
+				z-index: 1002;
+				border-color: #555 transparent transparent;
+			}
+
+			.iframedrag {
+				background-color: silver;
+				cursor: move;
+				padding: 2px 4px;
+			}
+
+			.el-card__body {
+				padding: 5px;
+			}
+		</style>
+		<link rel="stylesheet" href="./css/common.css">
+		<link rel="stylesheet" type="text/css" href="css/flawchart.css" />
+		<script src="./js/_.js"></script>
+		<script src="./js/axios.min.js">
+		</script>
+		<!--<script src="js/draw.min.js">
+		</script>
+		<script src="./js/drag.js">
+		</script>-->
+		<script type="text/javascript" src="js/com/svg.js">
+
+		</script>
+		<script type="text/javascript" src="js/com/svg.draggable.js">
+
+		</script>
+		<script src="./js/z.js">
+		</script>
+		<script src="./json/example.js">
+
+		</script>
+		<script src="http://cvpmdsip03/tools/js/vue.js"></script>
+		<script src="http://cvpmdsip03/tools/element-ui/lib/index.js"></script>
+
+
+		<script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="head" id="app">
+				<el-row :gutter="20">
+					<el-col :span="17">
+						<i class="el-icon-menu" title="Show/Hide Menu" ></i>
+						<span class="DashboardTitle" >WIP Distribution Diagram</span>
+					</el-col>
+				
+				 <el-col :span="4">
+				                        <el-select multiple filterable v-model="searchList" size="mini" placeholder="Search..." style="width:100%;">
+				                            <el-option v-for="item in allNode"
+				                                       :key="item.id"
+				                                       :label="item.id"
+				                                       :value="item.id">
+				                                <span style="float: left">{{ item.id}}</span>
+				                                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+				                            </el-option>
+				                        </el-select>
+				                    </el-col>
+									<el-col :span='1'>
+										<el-dropdown>
+				  <span class="el-dropdown-link">
+				  <i class="el-icon-more el-icon--right" id='morebut'></i>
+				  </span>
+				  <el-dropdown-menu slot="dropdown">
+				    <el-dropdown-item >
+						<span  @click="dlimg">
+						<i  id='downloadimg' title="Download this graph" class="el-icon-picture lst"></i>Srceenshot</span>
+										</el-dropdown-item>
+				  
+				    <el-dropdown-item>
+						<span  @click="remember">
+						<i class='el-icon-location-outline' id='rem_layout' title="Remember my layout lst"   ></i>Save layout</span>
+									</el-dropdown-item>
+									    <el-dropdown-item >
+											<span   @click="rmv" v-if="(''+localStorage.layout).length>10">
+											<i class='el-icon-delete lst err-red' id='rmv_layout' title="Remove current layout"  ></i>Clear layout
+													</span></el-dropdown-item>
+									
+				   
+				  </el-dropdown-menu>
+				</el-dropdown>
+										
+									</el-col>
+				           
+					
+				</el-row>
+				
+			</div>
+			<div id="left" class="nav">
+				<template>
+					<el-collapse v-model="activeName" accordion>
+						<el-collapse-item title="Color code definition" name="1">
+							<div>
+								<el-switch style=" padding: 2px 4px" v-model="setAll" active-color="steelblue" inactive-color="#ddd">
+								</el-switch>
+								<label style="color: steelblue;">All</label>
+							</div>
+
+
+							<div category='Shape' class="definition">
+								<div class="card" v-for="df in definition.shape" :title='df.type'>
+									<div class="card-head">
+										<image :key="df.DefinedItem" :src="'./icon/'+df.type+'.png'"></image>
+									</div>
+									<div class='card-body'>{{df.type}}</div>
+									<i class="number">{{df.Number}}</i>
+								</div>
+							</div>
+
+							<div category='Color' class="definition">
+								<div class="card" v-for="df in definition.color" :title='df.type'>
+									<div class="card-head">
+										<span class="ColorRect" :style="`background-color:${df.type}`"></span>
+									</div>
+									<div class='card-body'>{{df.DefinedItem}}</div>
+									<i class="number">{{df.Number}}</i>
+								</div>
+							</div>
+							<div category='arrow' class="definition">
+								<div class="card" v-for="df in definition.arrow" :title='df.type'>
+									<div class="card-head" v-html='arrow(df)'>
+
+										<!-- <span class="ColorRect" :style="`background-color:${df.type}`"></span> -->
+									</div>
+									<div class='card-body'>{{df.DefinedItem}}</div>
+
+								</div>
+							</div>
+
+			</div>
+			</el-collapse-item>
+			<el-collapse-item title="Parameters" name="2">
+				<div>
+
+					<el-select multiple filterable size="mini" placeholder="Workorder Type" style="width:90%; margin-left: 5%;">
+						<el-option v-for="item in ['a','b','c']" :key="item" :label="item" :value="item">
+							<span style="float: left">{{ item}}</span>
+							<span style="float: right; color: #8492a6; font-size: 13px">{{ item }}</span>
+						</el-option>
+					</el-select>
+					<el-select multiple filterable size="mini" placeholder="Product Family" style="width:90%; margin-left: 5%;">
+						<el-option v-for="item in ['a','b','c']" :key="item" :label="item" :value="item">
+							<span style="float: left">{{ item}}</span>
+							<span style="float: right; color: #8492a6; font-size: 13px">{{ item }}</span>
+						</el-option>
+					</el-select>
+				</div>
+
+			</el-collapse-item>
+			<el-collapse-item title="Dashboard" name="3"></el-collapse-item>
+			</template>
+
+		</div>
+		<div class="body" id="box" svg>
+
+
+		</div>
+		<div class="tag" id="tooltip"></div>
+		</div>
+
+		<script type="text/javascript" src="js/flowchart.js" defe>
+
+		</script>
+		<script type="text/javascript">
+			var Main = {
+				data() {
+					return {
+					
+						activeName: '1',
+						setAll: true,
+						definition: {
+							"shape": [{
+									"type": "Histogam",
+									"DefinedItem": "Histogam",
+									"Number": "3"
+								}, {
+									"type": "Image",
+									"DefinedItem": "Image",
+									"Number": "5"
+								},
+								{
+									"type": "Circle",
+									"DefinedItem": "Circle",
+									"Number": "5"
+								},
+								{
+									"type": "Iframe",
+									"DefinedItem": "iframe",
+									"Number": "5"
+								}
+							],
+							"color": [{
+									"type": "#00b880",
+									"DefinedItem": "Normal",
+									"Number": "6"
+								}, {
+									"type": "gray",
+									"DefinedItem": "Idle",
+									"Number": "4"
+								},
+								{
+									"type": "red",
+									"DefinedItem": "Alarm",
+									"Number": "6"
+								}
+							],
+							"arrow": [{
+									"width": "7",
+									"DefinedItem": "High"
+
+								},
+								{
+									"width": "5",
+									"DefinedItem": "Normal"
+
+								},
+								{
+									"width": "3",
+									"DefinedItem": "Low"
+
+								}
+							]
+						}
+					}
+				},
+				methods:{
+					
+					arrow(df) {
+						
+					let a=	'<svg width="25px" height="25px"> <defs> <marker id="arrow" refx="0" refy="1"';
+					     a+='   orient="auto" markerUnits="strokeWidth">';
+					 a+='    <path d="M0,0 L0,2 L2,1 z" fill="#000" /> </marker> </defs>';
+					 a+='  <line x1="0" y1="12" x2="10" y2="12" stroke="#000" stroke-width="'+df.width+'" ';
+					     a+='    marker-end="url(#arrow)" /> </svg>'; return a;
+					}
+				}
+
+			}
+			var Ctor = Vue.extend(Main);
+			var app = new Ctor().$mount('#left');
+			let head={
+				methods:{dlimg(){
+					
+					var that=this;
+								   this.$confirm('Download this graph?', 'Notice', {
+					  confirmButtonText: 'Yes',
+					  cancelButtonText: 'No',
+					  type: 'warning'
+					}).then(() => {
+					  //
+					  try{
+					  localStorage.setItem('img',JSON.stringify({
+						  name:Math.random().toString(36).substr(2),
+						  width:svg.attr('width'),
+						  height:svg.attr('height'),
+						  src:document.getElementById('box').innerHTML.replace(/\n/g,'').replace(/^\s+/g,'')//unescape(encodeURIComponent(document.getElementById('box').innerHTML))
+						  
+					  }));
+					  window.open('./dlimg.html?_=','_blank');}catch(e){
+					  	//TODO handle the exception
+						that.err[e.message]=e.stack;
+						 this.$notify({
+					  title: e.message,
+					  message: e.stack,
+					  type:'error',
+					  position: 'bottom-right'
+					});
+						that.$forceUpdate();
+					  }
+					  //
+					}).catch(() => {
+					           
+					});
+					
+				},
+					remember(){
+						   this.$confirm('You\'ll save current layout on your browser?', 'Notice', {
+									  confirmButtonText: 'Yes',
+									  cancelButtonText: 'Close',
+									  type: 'warning'
+									}).then(() => {
+									  //
+									  let layout=[]	,data=[];				  
+									  // JSON.parse(localStorage.getItem('layout')||'[]'),
+									  // ind=_.findIndex(layout,function(o){return o.params==net.queryObject.ChartConfigPath}),
+										  
+										  
+									// data= [...document.querySelectorAll('.element:not(.child)')].map(n=>{
+									// 	 let cxy=[+n.getAttribute('x'),+n.getAttribute('y')];
+									// 	 return {
+									// 	  id:n.getAttribute('id'),
+									// 	  center:((net.ele[n.getAttribute('id').id()].parent().attr('transform')||'(0,0)').match(/\((.+)\)/)[1]||'0,0').split(',').slice(-2).map((c1,indx)=>{return +c1+cxy[indx]})
+									//   }}) 
+									 // [crx,cry]=((net.ele[n].parent().attr('transform')||'(0,0)').match(/\((.+)\)/)[1]||'0,0').split(',').slice(-2).map(c1=>{return +c1})
+								  
+									/*  data=[...net.nodesRaw].map(n=>{return {id:n.id,center:n.center}});*/
+									
+									//data=[...rawdata.NodeDataset];
+									
+									rawdata.NodeDataset.map((n,i)=>{
+										data[i]={'Id':n.Id,
+										'location':n.location};
+										
+										return n});
+									  
+										  layout.push({params:'flowchart1',data:data})
+									
+									  
+									  
+									  localStorage.setItem('layout',JSON.stringify(layout));
+									   this.$message({
+						  message: 'Save success.',
+						  type: 'success'
+						});
+									
+									}).catch(() => {
+									           
+									});
+						
+					},
+					rmv(){
+						 this.$confirm('You\'ll clear current layout on your browser?', 'Notice', {
+						  confirmButtonText: 'Yes',
+						  cancelButtonText: 'Close',
+						  type: 'error'
+						}).then(() => {
+							localStorage.layout=[];
+							location.reload();
+							
+						})
+						
+					}},
+					data(){
+						return{
+								searchList:'',
+							allNode:[{}]
+							
+						}
+					}
+			}
+		let Ctor1 = Vue.extend(head);
+			var headvue = new Ctor1().$mount('#app');
+		</script>
+	</body>
+</html>

@@ -1,0 +1,223 @@
+* {
+    font-family: Arial;
+    /*font-size: 14px;*/
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+
+not supported by any browser */
+}
+
+body, html {
+    height: 100vh;
+    overflow: hidden;
+}
+[svg] {z-index:0; background-color:#fff;
+}
+.tag {
+    z-index: 1;
+}
+.el-card__body {
+    padding: 10px;
+}
+
+.el-checkbox-button--mini .el-checkbox-button__inner {
+    padding: 7px 3px;
+    font-size: 10px;
+    border-radius: 0;
+}
+
+.el-checkbox-button.is-checked[col='gold'] .el-checkbox-button__inner {
+    background-color: gold;
+    border-color: gold;
+    color: #fff;
+}
+
+.el-checkbox-group [col='gold'] .el-checkbox-button__inner {
+    color: gold;
+}
+
+.el-checkbox-button.is-checked[col='green'] .el-checkbox-button__inner {
+    background-color: green;
+    border-color: green;
+    color: #fff;
+}
+
+.el-checkbox-group [col='green'] .el-checkbox-button__inner {
+    color: green;
+}
+
+.el-checkbox-button.is-checked[col='red'] .el-checkbox-button__inner {
+    background-color: red;
+    border-color: red;
+    color: #fff;
+}
+
+.el-checkbox-group [col='red'] .el-checkbox-button__inner {
+    color: red;
+}
+
+.bg-purple .green {
+    background-color: green;
+    border-color: green;
+    color: #fff;
+}
+
+.bg-purple .red {
+    background-color: red;
+    border-color: red;
+    color: #fff;
+}
+
+.bg-purple .gold {
+    background-color: gold;
+    border-color: gold;
+    color: #fff;
+}
+.bg-purple [class*="ShiningColor"] {
+    background-color: white;
+   
+    color: purple;
+	border-style: solid;
+	  
+		 -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+}
+.ShiningColor-red{-webkit-animation-name: d_red;}
+@keyframes d_red {
+            0% {border-color: red; border-width: 1;}			
+            50% {border-color:pink;border-width: 4; }
+            100% {border-color: red;border-width: 1;}
+        }
+		.ShiningColor-blue{-webkit-animation-name: d_blue;}
+		@keyframes d_blue {
+		            0% {border-color: steelblue; border-width: 1;}			
+		            50% {border-color:aliceblue;border-width: 4; }
+		            100% {border-color:royalblue ;border-width: 1;}
+		        }
+				.ShiningColor-gold{-webkit-animation-name: d_gold;}
+				@keyframes d_gold {
+				            0% {border-color: yellow; border-width: 1;}			
+				            50% {border-color:lightyellow;border-width: 4; }
+				            100% {border-color: orange;border-width: 1;}
+				        }
+		.ShiningColor-green{-webkit-animation-name: d_green;}
+		@keyframes d_green {
+		            0% {border-color: green; border-width: 1;}			
+		            50% {border-color:palegreen;border-width: 4; }
+		            100% {border-color: green;border-width: 1;}
+		        }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+.bg-purple label {
+    font-size: 0.8em;
+}
+
+.bg-purple input {
+    cursor: pointer;
+    width: 25px;
+    height: 18px;
+    border-radius: 2px;
+    border: none;
+}
+
+.bg-purple .noselect {
+    background-color: gray;
+}
+
+.el-select-dropdown {
+    background-color: rgb(255,255,255, 0.8);
+}
+
+.el-dialog__body {
+    padding: 5px 5px!important;
+}
+
+#popout .el-dialog__header {
+    padding: 0 80px 0 20px;
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 1px solid #eee;
+   
+    overflow: hidden;
+    background-color: #F8F8F8;
+    border-radius: 2px 2px 0 0;
+}
+#popout .el-dialog__header .el-dialog__title{ font-size: 14px;
+    color: #333;}
+	.el-dialog{ margin-top: 5vh!important;width:85.8vw!important;}
+	 [ShiningColor] {
+                -webkit-animation-duration: 2s;
+                -webkit-animation-iteration-count: infinite;
+                stroke-width: 4;
+            }
+			[noblinking="yes"]{ -webkit-animation-name: none!important;  }
+.err-red{ color: #FF0000;}
+[ShiningColor="purple"] {
+            -webkit-animation-name: b_purple;           
+        }
+        @keyframes b_purple {
+            0% {stroke: purple; stroke-width: 2;}
+			
+            50% {stroke: mediumpurple;stroke-width: 4; }
+            100% {stroke: purple;stroke-width: 2;}
+        }
+[ShiningColor="red"] {
+            -webkit-animation-name: b_red;           
+        }
+        @keyframes b_red {
+            0% {stroke: red;stroke-width: 2;}
+            50% {stroke:pink; stroke-width: 4; }
+            100% {stroke: red;stroke-width: 2;}
+        }
+		
+		[ShiningColor="blue"] {
+		            -webkit-animation-name: b_blue;           
+		        }
+		        @keyframes b_blue {
+		            0% {stroke: steelblue;stroke-width: 2;}
+		            50% {stroke:skyblue; stroke-width: 4; }
+		            100% {stroke:steelblue;stroke-width: 2;}
+		        }
+				
+				[ShiningColor="yellow"] {
+					
+				            -webkit-animation-name: b_yellow;           
+				        }
+				        @keyframes b_yellow {
+				            0% {stroke: yellow;stroke-width: 2;border-color: yellow; border-width: 2px;border-style: solid; }
+				            50% {stroke:lightyellow; stroke-width: 4; border-color: lightyellow; border-width: 2px;border-style: solid;}
+				            100% {stroke:orange;stroke-width: 2;border-color: orange; border-width: 2px;border-style: solid; }
+				        }
+						[ShiningColor="gold"] {
+						            -webkit-animation-name: b_yellow;           
+						        }
+						      
+						[ShiningColor="green"] {
+						            -webkit-animation-name: b_green;           
+						        }
+						        @keyframes b_green {
+						            0% {stroke: green;stroke-width: 2;}
+						            50% {stroke:greenyellow; stroke-width: 4; }
+						            100% {stroke:green;stroke-width: 2;}
+						        }

@@ -1,0 +1,181 @@
+{
+	"NodeDataset": [{
+			"Id": "100",
+			"BackGroundColor": "steelblue",
+			"Color": "green",
+			"Size": "40",
+			"Text": "text-1",
+			"URL": "",
+			"Shape": "Circle",
+			"ToolTip": "This's a tooltip."
+		},
+		{
+			"Id": "200",
+			"BackGroundColor": "gray",
+			"Color": "red",
+			"Size": "30",
+			"Text": "text-2",
+			"URL": "",
+			"Shape": "Rectangle",
+			"ToolTip": "This's a tooltip."
+		},
+		{
+			"Id": "210",
+			"BackGroundColor": "gray",
+			"Color": "red",
+			"Size": "30",
+			"Text": "text-2.1",
+			"URL": "",
+			"Shape": "Rectangle",
+			"ToolTip": "This's a tooltip."
+		},
+		{
+			"Id": "220",
+			"BackGroundColor": "gray",
+			"Color": "red",
+			"Size": "30",
+			"Text": "text-2.2",
+			"URL": "",
+			"Shape": "Rectangle",
+			"ToolTip": "This's a tooltip."
+		},
+		{
+			"Id": "230",
+			"BackGroundColor": "gray",
+			"Color": "red",
+			"Size": "30",
+			"Text": "text-2.3",
+			"URL": "",
+			"Shape": "Rectangle",
+			"ToolTip": "This's a tooltip."
+		},
+		{
+			"Id": "300",
+			"BackGroundColor": "steelblue",
+			"Color": "green",
+			"Size": "40",
+			"Text": "input-1",
+			"URL": "",
+			"Shape": "Histogam",
+			"ToolTip": "This's a tooltip."
+		}, {
+			"Id": "400",
+			"BackGroundColor": "steelblue",
+			"Color": "yellow",
+			"Size": "30",
+			"Text": "input-11",
+			"URL": "",
+			"Shape": "Histogam",
+			"ToolTip": "This's a tooltip."
+		}, {
+			"Id": "500",
+			"BackGroundColor": "steelblue",
+			"Color": "red",
+			"Size": "40",
+			"Text": "input-31",
+			"URL": "",
+			"Shape": "Histogam",
+			"ToolTip": "This's a tooltip."
+		}, {
+			"Id": "600",
+			"BackGroundColor": "black",
+			"Color": "green",
+			"Size": "40",
+			"Text": "input-41",
+			"URL": "",
+			"Shape": "Histogam",
+			"ToolTip": "This's a tooltip."
+		}
+	],
+	"DataDataset": [{
+		"From":"100",
+		"To":"200",
+		"Size":"3",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Line",
+		"ToolTip":"tooltip"
+	},{
+		"From":"200",
+		"To":"300",
+		"Size":"3",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Line",
+		"ToolTip":"tooltip"
+	},{
+		"From":"210",
+		"To":"200",
+		"Size":"2",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Dash",
+		"CurveStyle":"Curve",
+		"ToolTip":"tooltip"
+	},{
+		"From":"220",
+		"To":"200",
+		"Size":"2",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Curve",
+		"ToolTip":"tooltip"
+	},{
+		"From":"230",
+		"To":"200",
+		"Size":"2",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Curve",
+		"ToolTip":"tooltip"
+	},{
+		"From":"230",
+		"To":"300",
+		"Size":"2",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Curve",
+		"ToolTip":"tooltip"
+	},{
+		"From":"300",
+		"To":"400",
+		"Size":"3",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Line",
+		"ToolTip":"tooltip"
+	},{
+		"From":"400",
+		"To":"300",
+		"Size":"3",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Line",
+		"ToolTip":"tooltip"
+	},{
+		"From":"400",
+		"To":"500",
+		"Size":"3",
+		"Label":"From.to.",
+		"Color":"steelblue",
+		"DashStyle":"Solid",
+		"CurveStyle":"Line",
+		"ToolTip":"tooltip"
+	},{
+		"From":"500",
+		"To":"600",
+		"Size":"3",
+		"Label":"From.to.",
+		"Color":"gray",
+		"DashStyle":"Solid",
+		"CurveStyle":"Line",
+		"ToolTip":"tooltip"
+	}]
+}

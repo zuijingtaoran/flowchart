@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.4/rgbcolor.min.js"></script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/canvg/dist/browser/canvg.min.js"></script>
+		<script src="js/z.js"></script>
+		<style type="text/css">
+
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<canvas id="c"></canvas>
+		</div>
+		<script defer>
+			 var context;
+        var redraw = false;
+			function dlimg(a) {
+				let b = JSON.parse(localStorage.getItem("img"));
+				a("#c").attr({
+					width: b.width,
+					height: b.height
+				});
+				var c, d = document.getElementById("c");
+				canvg("c", b.src, {
+					ignoreMouse: !0,
+					ignoreAnimation: !0,
+					renderCallback: function() {
+						c = d.toDataURL("image/png");
+						let e = document.createElement("a"),
+							a = new MouseEvent("click");
+						e.download = b.name, e.href = c, e.dispatchEvent(a)
+					},
+					forceRedraw: function() {
+						var a = redraw;
+						return redraw = !1, a
+					}
+				})//, window.opener = null, window.open("", "_self"), window.close()
+			}
+			window.onload = dlimg(Z);
+		</script>
+	</body>
+</html>

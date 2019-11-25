@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Fixed Flow Chart</title>
+			<script src="./js/_.js"></script>
+		<script src="./js/axios.min.js"></script>
+			<script type="text/javascript" src="js/com/svg.js">		
+			</script>
+			<script type="text/javascript" src="js/com/svg.draggable.js"></script>
+			<script src="./js/z.js">
+			</script>
+		<script src="https://unpkg.com/vue/dist/vue.js"></script>
+			<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+			<!-- <script src="http://cvpmdsip03/tools/js/vue.js"></script>
+			<script src="http://cvpmdsip03/tools/element-ui/lib/index.js"></script>
+				<link rel="stylesheet" href="http://cvpmdsip03/tools/element-ui/lib/theme-chalk/index.css">
+			
+			<script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script> -->
+		<style type="text/css">
+			*{ margin: 0px;
+			padding: 0px;
+			box-sizing: border-box;}
+			#box{ height: 100vh; position: relative;}
+			.head{ height: 40px; border-bottom: 1px solid #333333; }
+			.left{ position: absolute; bottom: 0px; left: 0px;
+			top: 40px;
+			border-right:1px solid #333333;  width: 200px;
+			}
+			.paint{ position: absolute; bottom: 0px; left: 200px; right: 0px;
+			top: 40px;
+			border-right:1px solid #333333;
+			}
+			.shapebox{ display: inline-block; height: 36px;cursor:pointer; margin: 2px; width: auto; }
+		.shape{width: 20px; height: 20px;border: 1px solid transparent;  }
+	.shape:hover{border: 1px dotted steelblue;}
+	.el-card__header{ padding:8px 4px; background-color: steelblue; color: #fff;}
+	
+	.el-card{ margin: 4px;}
+	.el-card__body{ padding: 10px;}
+
+            .ele-dot:hover {
+                stroke: #f06;
+                cursor: Pointer;
+            }
+	.shape_slt img{ border:1px solid steelblue; }
+	
+		</style>
+	</head>
+    <body>
+        <div id="box">
+            <div class="head">
+                <el-row>
+                    <el-col :span='4'>
+                        <b style="color: steelblue; line-height: 40px;">
+                            Fixed Flow chart
+                        </b>
+                    </el-col>
+                    <el-col :span='16'>
+                        <div>
+
+
+
+
+                        </div>
+
+                    </el-col>
+                    <el-col :span='3'></el-col>
+                </el-row>
+            </div>
+            <div class="left">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>Shape box</span>
+
+                    </div>
+                    <div class="shapebox" v-for="a in Object.keys(shape)" :title="a"
+                         :class='current_shape===a?"shape_slt":""'
+                         @click="select_shape(a)">
+                        <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
+                    </div>
+                </el-card>
+
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>{{!!current_shape?"["+current_shape+"]":""}}Property</span>
+
+                    </div>
+                    <div>
+                        <el-form ref="form" :model="config.area" label-width="90px" size='mini'>
+                            <el-form-item v-for="c in config.area" :key="c.label" :label="c.label">
+
+                                <el-select v-if="c.ele=='select'" v-model="c.value">
+                                    <el-option v-for="item in c.option"
+                                               :key="item"
+                                               :label="item"
+                                               :value="item">
+                                    </el-option>
+                                </el-select>
+                                <el-color-picker v-else-if="c.ele=='color'" v-model="c.value"></el-color-picker>
+                                <el-input v-else="c.ele=='input'" :type="c.type" v-model="c.value"></el-input>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-card>
+
+            </div>
+            <div class="paint" id='paint' style="cursor:url('http://s.xnimg.cn/imgpro/arrow/pre.cur');"></div>
+            <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefe; color:steelblue; font-size: 14px;">
+                {{!!current_dot[0]?`[${current_dot[0]},${current_dot[1]}]`:''}}
+            </i>
+        </div>
+
+
+
+
+        <script type="application/javascript">
+            let Main={
+
+                data(){return{
+                    current_dot:[20,300],
+                    current_shape:"",
+                    config:{
+                        area:[
+                            {label:"Name",ele:"input",type:"text",value:""},
+                            {label:"Size",ele:"input",type:"number",value:100},
+                            {label:"X",ele:"input",type:"number",value:0},
+                            {label:"Y",ele:"input",type:"number",value:0},
+                            {label:"Background",ele:"color",value:"#00b88c"},
+                            {label:"BorderColor",ele:"color",value:"#ff0066"},
+                            {label:"BorderWidth",ele:"input",type:"number",value:2},
+                            {label:"BorderStyle",ele:"select",type:"radio",option:["solid","dotted"],value:"solid"}
+                        ],
+                        reference:[],
+                        line:[]
+
+                    },
+                    shape:{"rect":{
+                            category:'area',
+                            icon:'./shape/',
+                        },
+                        "triangle":{
+                            category:'area',
+                            icon:'./shape/'
+                        },
+                        "circle":{
+                            category:'area',
+                            icon:'./shape/'
+                        },
+                        "pentagon":{
+                            category:'area',
+                            icon:'./shape/'
+                        },"hexagon":{
+                            category:'area',
+                            icon:'./shape/'
+                        },
+                        "image":{category:'reference',
+                            icon:'./shape/'	},
+                            "iframe":{category:'reference',
+                                icon:'./shape/'	},
+                                "line":{
+                                    category:'line',
+                                        icon:'./shape/'
+                                },
+
+                                "line-arrow":{
+                                    category:'line',
+                                        icon:'./shape/'
+                                },
+                                "curved":{
+                                    category:'line',
+                                        icon:'./shape/'
+                                },
+
+
+                                "curved-arrow":{
+                                    category:'line',
+                                        icon:'./shape/'
+                                },
+                                "elbow-connector":{
+                                    category:'line',
+                                        icon:'./shape/'
+                                },
+                                "elbow-arrow-connector":{
+                                    category:'line',
+                                        icon:'./shape/'
+                                },
+                                "text":{
+                                    category:'text',
+                                        icon:'./shape/'
+                                }
+
+                        }
+
+
+                }},
+                computed:{
+
+                },
+                methods:{
+                    select_shape(shape){
+                        let that=this;
+                        that.current_shape=shape;
+
+                    }
+                }
+
+
+            }
+               var Ctor = Vue.extend(Main);
+            var app=   new Ctor().$mount('#box');
+        </script>
+        <script type="text/javascript" src="js/fixedchart.js" defer=""></script>
+    </body>
+</html>
