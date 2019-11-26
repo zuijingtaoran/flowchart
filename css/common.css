@@ -221,3 +221,7 @@ body, html {
 						            50% {stroke:greenyellow; stroke-width: 4; }
 						            100% {stroke:green;stroke-width: 2;}
 						        }
+								
+								input[type='date']{}
+								input{ border: 1px solid steelblue; border-radius: 3px; width: 100%;
+								}

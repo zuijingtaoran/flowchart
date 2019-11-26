@@ -1,6 +1,6 @@
-((w, SVG, $) => {
+w=window;
 	class Net {
-		constructor() {
+		constructor(w) {
 			this.viewBox = [0, 0, document.getElementById('box').clientWidth,document.getElementById('box').clientHeight];
 			this.RawData = rawdata;
 			this.init();
@@ -49,6 +49,7 @@
 			// w.svg = new SVG('box').size(...that.viewBox.slice(-2)).viewbox(...that.viewBox).attr({
 			// 	id: 'flowchart_box'
 			// });
+			Z('#box').html("");
 			w.svg = SVG().addTo('#box').size(...that.viewBox.slice(-2)).viewbox(...that.viewBox).attr({
 				id: 'flowchart_box'
 			});
@@ -134,7 +135,7 @@
 				elm.on('mouseover', function(e) {
 					[x1, y1] = [elm.x(), elm.y()];
 					e.preventDefault();
-					$('#tooltip').html(node.ToolTip).css({
+					Z('#tooltip').html(node.ToolTip).css({
 						top: y1,
 						left: x1 + node.Size / 2
 					}).show();
@@ -143,7 +144,7 @@
 					// 	'stroke': '#f06'})
 				})
 				elm.on('mouseout', function(e) {
-					$('#tooltip').hide();
+					Z('#tooltip').hide();
 					e.preventDefault();
 
 				})
@@ -287,7 +288,9 @@
 		}
 	}
 
-	window.net = new Net();
+	
+	((w, SVG, $) => {
+		w.net = new Net(w);
 })(window, SVG, (() => {
 	return Z;
 })());

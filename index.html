@@ -6,7 +6,7 @@
 
 		<title>
 			Flow chart
-		</title>
+		</title><link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 		<style type="text/css">
 			* {
 				padding: 0px;
@@ -29,7 +29,7 @@
 				top: 0px;
 
 				width: 100%;
-				border-bottom: 1px solid #000;
+				
 			}
 
 			.body {
@@ -47,7 +47,7 @@
 				bottom: 0px;
 				height: auto;
 				width: 200px;
-				border-right: 1px solid #000;
+				border-right: 1px solid #bbb;
 				left: 0px;
 			}
 
@@ -105,6 +105,9 @@
 			.el-card__body {
 				padding: 5px;
 			}
+            .el-date-editor { width:auto!important;
+            }
+			
 		</style>
 		<link rel="stylesheet" href="./css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/flawchart.css" />
@@ -125,17 +128,20 @@
 		</script>
 		<script src="./json/example.js">
 
-		</script>
-		<script src="http://cvpmdsip03/tools/js/vue.js"></script>
+		</script><script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<!--<script src="http://cvpmdsip03/tools/js/vue.js"></script>
 		<script src="http://cvpmdsip03/tools/element-ui/lib/index.js"></script>
 
 
-		<script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>
+		<script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>-->
 	</head>
 	<body>
 		<div class="container">
 			<div class="head" id="app">
-				<el-row :gutter="20">
+				<el-row :gutter="20" style="height: 39px;">
 					<el-col :span="17">
 						<i class="el-icon-menu" title="Show/Hide Menu" ></i>
 						<span class="DashboardTitle" >WIP Distribution Diagram</span>
@@ -144,11 +150,11 @@
 				 <el-col :span="4">
 				                        <el-select multiple filterable v-model="searchList" size="mini" placeholder="Search..." style="width:100%;">
 				                            <el-option v-for="item in allNode"
-				                                       :key="item.id"
-				                                       :label="item.id"
-				                                       :value="item.id">
-				                                <span style="float: left">{{ item.id}}</span>
-				                                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+				                                       :key="item"
+				                                       :label="item"
+				                                       :value="item">
+				                                <span style="float: left">{{ item}}</span>
+				                               <!-- <span style="float: right; color: #8492a6; font-size: 13px">{{ item.id }}</span> -->
 				                            </el-option>
 				                        </el-select>
 				                    </el-col>
@@ -168,7 +174,7 @@
 						<i class='el-icon-location-outline' id='rem_layout' title="Remember my layout lst"   ></i>Save layout</span>
 									</el-dropdown-item>
 									    <el-dropdown-item >
-											<span   @click="rmv" v-if="(''+localStorage.layout).length>10">
+											<span   @click="rmv" v-if="layout.length>10">
 											<i class='el-icon-delete lst err-red' id='rmv_layout' title="Remove current layout"  ></i>Clear layout
 													</span></el-dropdown-item>
 									
@@ -180,7 +186,9 @@
 				           
 					
 				</el-row>
-				
+				<el-row><el-col :span=24>
+				<el-progress :show-text='!1' color='steelblue'  :stroke-width="1" :percentage="pct"></el-progress>
+				</el-col></el-row>
 			</div>
 			<div id="left" class="nav">
 				<template>
@@ -223,18 +231,18 @@
 								</div>
 							</div>
 
-			</div>
+			
 			</el-collapse-item>
 			<el-collapse-item title="Parameters" name="2">
 				<div>
 
-					<el-select multiple filterable size="mini" placeholder="Workorder Type" style="width:90%; margin-left: 5%;">
+					<el-select v-model='params.a' multiple filterable size="mini" placeholder="Workorder Type" style="width:90%; margin-left: 5%;">
 						<el-option v-for="item in ['a','b','c']" :key="item" :label="item" :value="item">
 							<span style="float: left">{{ item}}</span>
 							<span style="float: right; color: #8492a6; font-size: 13px">{{ item }}</span>
 						</el-option>
 					</el-select>
-					<el-select multiple filterable size="mini" placeholder="Product Family" style="width:90%; margin-left: 5%;">
+					<el-select v-model='params.b' multiple filterable size="mini" placeholder="Product Family" style="width:90%; margin-left: 5%;">
 						<el-option v-for="item in ['a','b','c']" :key="item" :label="item" :value="item">
 							<span style="float: left">{{ item}}</span>
 							<span style="float: right; color: #8492a6; font-size: 13px">{{ item }}</span>
@@ -243,7 +251,39 @@
 				</div>
 
 			</el-collapse-item>
-			<el-collapse-item title="Dashboard" name="3"></el-collapse-item>
+                        <el-collapse-item title="Simulation" name="3">
+                            <el-row>
+                                <el-col :span="6">  Start</el-col>
+                                <el-col :span="18">
+									<input  v-model="starttime"  type="date" >
+									<!-- <el-date-picker 
+                type="datetime" size="mini"
+                placeholder="">
+</el-date-picker> --></el-col>
+                              
+                              
+                            </el-row><el-row>
+                                         <el-col :span="6">   End</el-col>
+                                         <el-col :span="18">
+										<!-- 	 <el-date-picker v-model="endtime" size="mini"
+                type="datetime"
+                placeholder="">
+
+</el-date-picker> -->
+	<input  v-model="endtime"  type="date" >
+</el-col>
+ 
+   
+</el-row><el-row >
+             <div align="right">
+                
+                 <el-button @click='simulation' type="primary" size="mini"
+				  :disabled="smltdis"
+				  style="background-color:steelblue" round>Simulation</el-button>
+             </div>
+</el-row>
+                           
+</el-collapse-item>
 			</template>
 
 		</div>
@@ -257,13 +297,19 @@
 		<script type="text/javascript" src="js/flowchart.js" defe>
 
 		</script>
-		<script type="text/javascript">
+		<script type="text/javascript" defer>
 			var Main = {
 				data() {
 					return {
-					
+                        starttime: "",
+                        endtime: "",
 						activeName: '1',
 						setAll: true,
+						smltdis:false,
+						params:{
+							a:"",
+							b:""
+						},
 						definition: {
 							"shape": [{
 									"type": "Histogam",
@@ -320,7 +366,41 @@
 					}
 				},
 				methods:{
-					
+					simulation(){
+						var that=this;
+						  this.$confirm('Start simulation?', 'Notice', {
+						  confirmButtonText: 'Yes',
+						  cancelButtonText: 'No',
+						  type: 'warning'
+						}).then(() => {
+						let	len=54;
+						that.smltdis=true;
+						for(let i=1;i<len;i++){
+						setTimeout(function(d,a,b){
+							d.NodeDataset.map(n=>{
+								n.Size=Math.floor( Math.random()*30+50);
+								n.BackGroundColor=["#00b88c","#4394d6","#f06"][Math.floor(Math.random()*3)];
+							delete	n.element;
+							delete	n.text;
+								return n;
+							})
+							d.DataDataset.map(n=>{
+								n.Size=Math.floor( Math.random()*5+1);
+								n.Color=["#00b88c","#4394d6","#f06"][Math.floor(Math.random()*3)];
+								n.Label=["NodeDataset","DataDataset","simulation"][Math.floor(Math.random()*3)];
+								delete	n.element;
+								delete	n.text;
+								return n;
+							})
+							delete window.net;
+							window.net=new Net();
+							b.pct=i/(len+1)*100;
+							
+						},1000*i,rawdata,that,headvue)	
+							i==len&&(that.smltdis=false)
+						}})
+						
+					},
 					arrow(df) {
 						
 					let a=	'<svg width="25px" height="25px"> <defs> <marker id="arrow" refx="0" refy="1"';
@@ -399,11 +479,8 @@
 										
 										return n});
 									  
-										  layout.push({params:'flowchart1',data:data})
-									
-									  
-									  
-									  localStorage.setItem('layout',JSON.stringify(layout));
+										  layout.push({params:'flowchart1',data:data})	
+											localStorage.setItem('layout',JSON.stringify(layout));
 									   this.$message({
 						  message: 'Save success.',
 						  type: 'success'
@@ -427,10 +504,11 @@
 						
 					}},
 					data(){
-						return{
+                        return {
+                           layout:''+localStorage.layout,
 								searchList:'',
-							allNode:[{}]
-							
+							allNode:[],
+							pct:12
 						}
 					}
 			}
