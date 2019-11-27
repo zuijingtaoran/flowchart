@@ -223,5 +223,5 @@ body, html {
 						        }
 								
 								input[type='date']{}
-								input{ border: 1px solid steelblue; border-radius: 3px; width: 100%;
+							select,input{ border: 1px solid steelblue; border-radius: 3px; width: 100%;
 								}

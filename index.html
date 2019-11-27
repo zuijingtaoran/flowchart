@@ -107,8 +107,11 @@
 			}
             .el-date-editor { width:auto!important;
             }
-			
+			.nhl{ color: gray;}
+			.hl{ color:steelblue;}
+			.play{ cursor: pointer;}
 		</style>
+		 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link rel="stylesheet" href="./css/common.css">
 		<link rel="stylesheet" type="text/css" href="css/flawchart.css" />
 		<script src="./js/_.js"></script>
@@ -256,8 +259,8 @@
                                 <el-col :span="6">  Start</el-col>
                                 <el-col :span="18">
 									<input  v-model="starttime"  type="date" >
-									<!-- <el-date-picker 
-                type="datetime" size="mini"
+								<!-- 	<el-date-picker   format="MM-dd HH:mm"
+                type="datetime" size="mini" v-model="starttime"
                 placeholder="">
 </el-date-picker> --></el-col>
                               
@@ -265,24 +268,52 @@
                             </el-row><el-row>
                                          <el-col :span="6">   End</el-col>
                                          <el-col :span="18">
-										<!-- 	 <el-date-picker v-model="endtime" size="mini"
+											<!-- <el-date-picker v-model="endtime" size="mini" format="MM-dd HH:mm"
                 type="datetime"
                 placeholder="">
 
 </el-date-picker> -->
 	<input  v-model="endtime"  type="date" >
 </el-col>
- 
+  <el-col :span="6">   Interval</el-col>
+    <el-col :span="18">
+ 										
+ 	<select  v-model="interval"  >
+		<option v-for="a in [100,200,300,400,500,800,1000]" :value="a">{{a}}</option>
+	</select>
+ </el-col>
    
-</el-row><el-row >
+</el-row>
+<!-- <el-row >
              <div align="right">
                 
                  <el-button @click='simulation' type="primary" size="mini"
 				  :disabled="smltdis"
 				  style="background-color:steelblue" round>Simulation</el-button>
+				  
+				  
              </div>
-</el-row>
-                           
+</el-row> -->
+      
+			<el-row >
+				 <div align="right">
+				<!-- <el-col :span="16"><b>{{crttm}}</b> </el-col> -->
+				<el-col :span="24" align=right>
+					<span class="material-icons play" title="Play"  :class="PauseText=='pause_circle_outline'?'hl':'nhl'"
+					:disabled="PauseText!=='pause_circle_outline'"
+					  @click="simulation">play_circle_outline</span>
+					 <span class="material-icons play" title="Pause" :class="PauseText=='pause_circle_outline'?'nhl':'hl'"
+					 :disabled="PauseText=='pause_circle_outline'"
+					   @click="pause">pause_circle_outline</span>
+					 
+					  <i class="material-icons" style=" 
+					  cursor:pointer" title="Repeat":class="loop?'hl':'nhl'"  @click="loop=!loop">repeat</i>
+				<!-- 	<el-button type="primary" size="mini"
+				
+				  style="background-color:steelblue" round @click="pause">{{PauseText}}</el-button> -->
+				</el-col>
+				</div>
+			</el-row>			   
 </el-collapse-item>
 			</template>
 
@@ -298,11 +329,17 @@
 
 		</script>
 		<script type="text/javascript" defer>
+			let tmr=[];
 			var Main = {
 				data() {
 					return {
-                        starttime: "",
-                        endtime: "",
+						loop:false,
+                        starttime: "2019-10-01",
+                        endtime: "2019-10-03",
+						PauseText:"pause_circle_outline",
+						crttm:"",
+						startint:1,
+						interval:"500",
 						activeName: '1',
 						setAll: true,
 						smltdis:false,
@@ -366,17 +403,36 @@
 					}
 				},
 				methods:{
-					simulation(){
+					repect(){},
+					pause(){
 						var that=this;
-						  this.$confirm('Start simulation?', 'Notice', {
-						  confirmButtonText: 'Yes',
-						  cancelButtonText: 'No',
-						  type: 'warning'
-						}).then(() => {
-						let	len=54;
+						if(that.PauseText=="pause_circle_outline"){
+							//that.starttime=that.crttm;
+							that.PauseText="play_circle_outline";
+							
+						}else{that.PauseText="pause_circle_outline";
+							that.show();
+							
+						}
+					},
+					show(){
+						var that=this;
+						let s=+new Date(that.starttime),
+						e=+new Date(that.endtime),
+						unit=1000*60*60,						
+						len=(e-s)/unit;
 						that.smltdis=true;
-						for(let i=1;i<len;i++){
-						setTimeout(function(d,a,b){
+						tmr=[];
+						for(let i=that.startint;i<len+2;i++){
+							console.log(i)
+						
+					tmr.push(	setTimeout(function(d,a,b){
+							if(that.PauseText!=='pause_circle_outline'){
+								tmr.map(n=>{clearTimeout(n);})
+								
+								return;
+							}
+								that.crttm=new Date(s+i*unit).format("MM-dd hh:mm");//yyyy-MM-dd hh:mm:ss
 							d.NodeDataset.map(n=>{
 								n.Size=Math.floor( Math.random()*30+50);
 								n.BackGroundColor=["#00b88c","#4394d6","#f06"][Math.floor(Math.random()*3)];
@@ -394,11 +450,28 @@
 							})
 							delete window.net;
 							window.net=new Net();
-							b.pct=i/(len+1)*100;
 							
-						},1000*i,rawdata,that,headvue)	
-							i==len&&(that.smltdis=false)
-						}})
+							b.pct=i/(len+1)*100;
+							//
+							that.startint=i;
+							console.log(that.startint)
+							if(i==len+1){that.smltdis=false;that.startint=1;
+							if(that.loop){that.show();}
+							}
+						},that.interval*(i-that.startint+1),rawdata,that,headvue)	)
+							
+						
+					}},
+					simulation(){
+					 var that=this;
+					 that.PauseText='pause_circle_outline';
+						//   this.$confirm('Start simulation?', 'Notice', {
+						//   confirmButtonText: 'Yes',
+						//   cancelButtonText: 'No',
+						//   type: 'warning'
+						// }).then(() => {
+						that.show();
+					//	})
 						
 					},
 					arrow(df) {
@@ -514,6 +587,27 @@
 			}
 		let Ctor1 = Vue.extend(head);
 			var headvue = new Ctor1().$mount('#app');
+			
+			Date.prototype.format = function(fmt) { 
+     var o = { 
+        "M+" : this.getMonth()+1,                 //月份 
+        "d+" : this.getDate(),                    //日 
+        "h+" : this.getHours(),                   //小时 
+        "m+" : this.getMinutes(),                 //分 
+        "s+" : this.getSeconds(),                 //秒 
+        "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+        "S"  : this.getMilliseconds()             //毫秒 
+    }; 
+    if(/(y+)/.test(fmt)) {
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+    }
+     for(var k in o) {
+        if(new RegExp("("+ k +")").test(fmt)){
+             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+         }
+     }
+    return fmt; 
+}
 		</script>
 	</body>
 </html>
