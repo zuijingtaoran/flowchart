@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <span class="material-icons" style="color:steelblue; cursor:pointer" title="Pause">pause_circle_outline</span>
+    <i class="material-icons" style="color:steelblue; cursor:pointer" title="Play">play_circle_outline</i>
+    <i class="material-icons" style="color:steelblue; cursor:pointer" title="Repeat">repeat</i>
+    <i class="material-icons" style="color:steelblue; cursor:pointer" title="Voice Alert Off">volume_off</i>
+    <div class="material-icons" style="color:steelblue; cursor:pointer" title="Refresh" onclick=" AJAXGenerateChart();">refresh</div>
+    <div id="btn_Menu" class="material-icons" style="color:steelblue; cursor:pointer" title="Menu" onclick="ShowChartMenuItems('btn_Menu');">menu</div>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="grade" onclick="ShowChartMenuItems('btn_SourceData');">star</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="grade" onclick="ShowChartMenuItems('btn_SourceData');">star_border</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="grade" onclick="ShowChartMenuItems('btn_SourceData');">star_half</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="on" onclick="ShowChartMenuItems('btn_SourceData');">toggle_on</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="off" onclick="ShowChartMenuItems('btn_SourceData');">toggle_off</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="done" onclick="ShowChartMenuItems('btn_SourceData');">done</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="history" onclick="ShowChartMenuItems('btn_SourceData');">history</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="new window" onclick="ShowChartMenuItems('btn_SourceData');">open_in_new</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="schedule" onclick="ShowChartMenuItems('btn_SourceData');">schedule</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="line chart" onclick="ShowChartMenuItems('btn_SourceData');">timeline</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="pie chart" onclick="ShowChartMenuItems('btn_SourceData');">donut_small</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="tie map" onclick="ShowChartMenuItems('btn_SourceData');">blur_onl</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="column chart" onclick="ShowChartMenuItems('btn_SourceData');">assessment</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="column chart" onclick="ShowChartMenuItems('btn_SourceData');">equalizer</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="bar chart" onclick="ShowChartMenuItems('btn_SourceData');">sort</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="bar chart" onclick="ShowChartMenuItems('btn_SourceData');">bubble_chart</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="packed bubble chart" onclick="ShowChartMenuItems('btn_SourceData');">group_work</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="meter chart" onclick="ShowChartMenuItems('btn_SourceData');">speed</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="KPI chart" onclick="ShowChartMenuItems('btn_SourceData');">slow_motion_video</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="info chart" onclick="ShowChartMenuItems('btn_SourceData');">picture_in_picture</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="KPI chart" onclick="ShowChartMenuItems('btn_SourceData');">featured_play_list</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="table" onclick="ShowChartMenuItems('btn_SourceData');">view_list</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="info" onclick="ShowChartMenuItems('btn_SourceData');">info</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="dashboard" onclick="ShowChartMenuItems('btn_SourceData');">dashboard</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="trackchanges" onclick="ShowChartMenuItems('btn_SourceData');">track_changes</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="alert" onclick="ShowChartMenuItems('btn_SourceData');">notification_important</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="description" onclick="ShowChartMenuItems('btn_SourceData');">description</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="contact Email" onclick="ShowChartMenuItems('btn_SourceData');">contact_mail</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Email" onclick="ShowChartMenuItems('btn_SourceData');">mail_outline</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="link" onclick="ShowChartMenuItems('btn_SourceData');">link</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">storage</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">folder</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">folder_open</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">create_new_folder</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">arrow_drop_down</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">arrow_drop_up</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">arrow_left</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">arrow_right</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">check_box_outline_blank</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">check_box</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">group</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">group_add</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">person</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">person_add</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">settings_application</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">settings_applications</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">build</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">search</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">home</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="data base" onclick="ShowChartMenuItems('btn_SourceData');">today</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="upload" onclick="ShowChartMenuItems('btn_SourceData');">unarchive</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="template" onclick="ShowChartMenuItems('btn_SourceData');">insert_drive_file</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="close" onclick="ShowChartMenuItems('btn_SourceData');">close</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">save</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">thumb_up</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">thumb_down</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">signal_cellular_4_bar</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">filter_none</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">crop_din</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">minimize</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">maximize</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">flip_to_front</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Save" onclick="ShowChartMenuItems('btn_SourceData');">flip_to_back</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="publish" onclick="ShowChartMenuItems('btn_SourceData');">language</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Analytics" onclick="ShowChartMenuItems('btn_SourceData');">insert_drive_file</span>
+    <span class="material-icons" style="color:steelblue; cursor:pointer; width:25px" title="Analytics" onclick="ShowChartMenuItems('btn_SourceData');">map</span>
+</body>
+</html>
