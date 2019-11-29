@@ -13,6 +13,7 @@ display: inline-block; margin: 2px; text-align: center; overflow: visible;
 .card-head{ height:22px; width: 100%;}
 .card-body{ height: 12px; font-size: 10px; line-height: 11px;}
 .card img{  width: 20px; height: 20px;}
+.noselected{ opacity: 0.25!important;}
 .card .ColorRect{width: 20px; height: 20px; display: inline-block; color: #fff;}
 .definition .number {
     background-color: transparent;

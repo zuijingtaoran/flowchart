@@ -53,6 +53,14 @@ w=window;
 			w.svg = SVG().addTo('#box').size(...that.viewBox.slice(-2)).viewbox(...that.viewBox).attr({
 				id: 'flowchart_box'
 			});
+			w.svg.text(that.RawData.Description.title).move(that.viewBox[2] / 2, 20).
+			font({ fill: '#333', size: 25, family: 'Inconsolata', anchor: 'middle' }).attr('class', 'title');
+			                    //subtitle
+			 w.svg.text(that.RawData.Description.subTitle)
+			 .move(that.viewBox[2] / 2, 60).font({ fill: '#666', size: 14, family: 'Inconsolata', anchor: 'middle' });
+			
+			                  
+			
 			that.RawData.NodeDataset.map((node, index) => {
 
 				switch (node.Shape) {
@@ -60,7 +68,7 @@ w=window;
 						node.len = node.Size / 2;
 						node.element = w.svg.circle(node.Size * zoom).fill(node.BackGroundColor).move(...node.location);
 						break;
-					case "Rectangle":
+					case "Hexagon":
 						let r = 100 / node.Size / zoom;
 						node.len = node.Size / 1;
 						node.element = w.svg.polygon(
@@ -72,7 +80,7 @@ w=window;
 		${250.0000/r},${286.6025/r}`
 						).fill(node.BackGroundColor).move(...node.location)
 						break;
-					case "Histogam":
+					case "Rect":
 						node.len = node.Size / 2;
 						node.element = w.svg.rect(node.Size * zoom, node.Size).fill(node.BackGroundColor).move(...node.location)
 						break;
@@ -106,6 +114,7 @@ w=window;
 				}
 				node.element.attr({
 					"id": node.Id,
+					"type":node.Shape,
 					"ShiningColor":node.ShiningColor||"",
 					"class": "element "
 				}).draggable();
@@ -226,7 +235,8 @@ w=window;
 						'stroke': n.Color,
 						'stroke-width': n.Size,
 						'stroke-dasharray': n.DashStyle === 'Dash' ? '5' : '0',
-						'fill': 'none'
+						'fill': 'none',type:"R"+n.Size,
+						'class':'element'
 					});
 
 				} else {
@@ -234,7 +244,8 @@ w=window;
 						'stroke': n.Color,
 						'stroke-width': n.Size,
 						'stroke-dasharray': n.DashStyle === 'Dash' ? '5' : '0',
-						'fill': 'none'
+						'fill': 'none',type:"R"+n.Size,
+						'class':'element'
 					});
 
 				}
@@ -246,7 +257,9 @@ w=window;
 				})
 				n.text.path(that.textpath(...n.cf, ...n.ct, n.CurveStyle)).font({
 					size: 20.5,
-					family: 'Verdana'
+					family: 'Verdana',type:"R"+n.Size,
+						'class':'element'
+					
 				})
 				n.text.textPath().attr('startOffset', '30%')
 				//
@@ -264,6 +277,7 @@ w=window;
 				})[0], n);
 
 			})
+!!app.render&&app.render(app.dflist);
 
 		}
 		BerzierLine(x1, y1, x2, y2) {
@@ -291,6 +305,7 @@ w=window;
 	
 	((w, SVG, $) => {
 		w.net = new Net(w);
+		
 })(window, SVG, (() => {
 	return Z;
 })());

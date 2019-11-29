@@ -1,4 +1,8 @@
 var rawdata={
+	"Description":{
+		title:"Dynamic Flow chart",
+		subTitle:`Snapshot:2019-11-29 -- Total WIP:551`
+	},
 	"NodeDataset": [{
 			"Id": "100",
 			"BackGroundColor": "steelblue",
@@ -17,7 +21,7 @@ var rawdata={
 			"Size": "80",
 			"Text": "text-2",
 			"URL": "",
-			"Shape": "Rectangle",
+			"Shape": "Rect",
 			"ToolTip": "This's a tooltip."
 			,"ShiningColor":"yellow"
 		},
@@ -28,7 +32,7 @@ var rawdata={
 			"Size": "70",
 			"Text": "text-2.1",
 			"URL": "",
-			"Shape": "Rectangle",
+			"Shape": "Rect",
 			"ToolTip": "This's a tooltip."
 		},
 		{
@@ -38,27 +42,27 @@ var rawdata={
 			"Size": "70",
 			"Text": "text-2.2",
 			"URL": "",
-			"Shape": "Rectangle",
+			"Shape": "Rect",
 			"ToolTip": "This's a tooltip."
 		},
 		{
 			"Id": "230",
-			"BackGroundColor": "gray",
+			"BackGroundColor": "red",
 			"Color": "red",
 			"Size": "70",
 			"Text": "text-2.3",
 			"URL": "",
-			"Shape": "Rectangle",
+			"Shape": "Rect",
 			"ToolTip": "This's a tooltip."
 		},
 		{
 			"Id": "300",
 			"BackGroundColor": "steelblue",
 			"Color": "green",
-			"Size": "100",
+			"Size": "60",
 			"Text": "input-1",
 			"URL": "",
-			"Shape": "Histogam",
+			"Shape": "Hexagon",
 			"ToolTip": "This's a tooltip."
 		}, {
 			"Id": "400",

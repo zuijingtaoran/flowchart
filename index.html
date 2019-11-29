@@ -198,14 +198,19 @@
 					<el-collapse v-model="activeName" accordion>
 						<el-collapse-item title="Color code definition" name="1">
 							<div>
-								<el-switch style=" padding: 2px 4px" v-model="setAll" active-color="steelblue" inactive-color="#ddd">
+								<el-switch style=" padding: 2px 4px" v-model="setAll"
+								
+								 active-color="steelblue" inactive-color="#ddd">
 								</el-switch>
-								<label style="color: steelblue;">All</label>
+								<label style="color: steelblue;">ClearAll</label>
 							</div>
 
 
 							<div category='Shape' class="definition">
-								<div class="card" v-for="df in definition.shape" :title='df.type'>
+								<div class="card" v-for="df in definition.shape"
+								@click="dfclick(df)"
+								 :class="dflist.indexOf(df.type)>-1&&'noselected'"
+								 :title='df.type'>
 									<div class="card-head">
 										<image :key="df.DefinedItem" :src="'./icon/'+df.type+'.png'"></image>
 									</div>
@@ -215,7 +220,10 @@
 							</div>
 
 							<div category='Color' class="definition">
-								<div class="card" v-for="df in definition.color" :title='df.type'>
+								<div class="card" v-for="df in definition.color" 
+								 @click="dfclick(df)" 
+								  :class="dflist.indexOf(df.type)>-1&&'noselected'"
+								 :title='df.type'>
 									<div class="card-head">
 										<span class="ColorRect" :style="`background-color:${df.type}`"></span>
 									</div>
@@ -224,13 +232,15 @@
 								</div>
 							</div>
 							<div category='arrow' class="definition">
-								<div class="card" v-for="df in definition.arrow" :title='df.type'>
+								<div class="card" v-for="df in definition.arrow" 
+								 :class="dflist.indexOf(df.type)>-1&&'noselected'"
+								:title='df.type' @click="dfclick(df)">
 									<div class="card-head" v-html='arrow(df)'>
 
 										<!-- <span class="ColorRect" :style="`background-color:${df.type}`"></span> -->
 									</div>
 									<div class='card-body'>{{df.DefinedItem}}</div>
-
+<i class="number">{{df.Number}}</i>
 								</div>
 							</div>
 
@@ -341,68 +351,156 @@
 						startint:1,
 						interval:"500",
 						activeName: '1',
-						setAll: true,
+						setAll: false,
 						smltdis:false,
 						params:{
 							a:"",
 							b:""
 						},
+						dflist:[],
 						definition: {
 							"shape": [{
-									"type": "Histogam",
-									"DefinedItem": "Histogam",
+									"type": "Hexagon",
+									"DefinedItem": "Hexagon",
 									"Number": "3"
+									,"Selected":false
+									
 								}, {
+									"type": "Rect",
+									"DefinedItem": "Rect",
+									"Number": "2","Selected":true
+								},{
 									"type": "Image",
 									"DefinedItem": "Image",
-									"Number": "5"
+									"Number": "5","Selected":true
 								},
 								{
 									"type": "Circle",
 									"DefinedItem": "Circle",
-									"Number": "5"
+									"Number": "5","Selected":true
 								},
 								{
 									"type": "Iframe",
 									"DefinedItem": "iframe",
-									"Number": "5"
+									"Number": "5","Selected":true
 								}
 							],
 							"color": [{
-									"type": "#00b880",
+									"type": "steelblue",
 									"DefinedItem": "Normal",
-									"Number": "6"
+									"Number": "6","Selected":true
 								}, {
 									"type": "gray",
 									"DefinedItem": "Idle",
-									"Number": "4"
+									"Number": "4","Selected":true
 								},
 								{
 									"type": "red",
 									"DefinedItem": "Alarm",
-									"Number": "6"
+									"Number": "6","Selected":true
 								}
 							],
 							"arrow": [{
-									"width": "7",
-									"DefinedItem": "High"
-
-								},
-								{
+								"type": "R5",
 									"width": "5",
-									"DefinedItem": "Normal"
+									"DefinedItem": "High","Selected":true
 
 								},
-								{
+								{	"type": "R4",
+									"width": "4",
+									"DefinedItem": "Normal","Selected":true
+
+								},
+								{	"type": "R3",
 									"width": "3",
-									"DefinedItem": "Low"
+									"DefinedItem": "Normal","Selected":true
+
+								},
+								{	"type": "R2",
+									"width": "2",
+									"DefinedItem": "Normal","Selected":true
+
+								},
+								{	"type": "R1",
+									"width": "1",
+									"DefinedItem": "Low","Selected":true
 
 								}
 							]
 						}
 					}
 				},
+				mounted(){
+					
+					var that=this;
+					that.render(that.dflist,true)
+				}
+				,
+				watch:{
+					dflist(val){
+						this.render(val)
+						
+					},
+                setAll(val) {
+                    var arr = [],that=this;
+                    this.definition.shape.map(n => {
+                        arr.push(n.type);
+                        return n;
+                    });
+					this.definition.color.map(n => {
+					    arr.push(n.type);
+					    return n;
+					});
+					this.definition.arrow.map(n => {
+					    arr.push(n.type);
+					    return n;
+					});
+					setTimeout(function(){
+						  val ? that.dflist = [...arr] : that.dflist = [];
+						
+					},100)
+               
+                }
+					
+				},
 				methods:{
+					render(val,init){
+						var that=this;
+						dflen=that.definition.shape.length+
+						that.definition.color.length+that.definition.arrow.length;
+						 val.length==dflen && (that.setAll = true)
+						 val.length ==0 && (that.setAll = false) ;
+						Z('.element').each(function(){
+							Z(this).removeClass('noselected');
+						})
+						val.map(n=>{
+							Z(`[type='${n}'],[fill='${n}']`).each(function(){
+							//	console.log(Z(this)[0])
+								Z(this).addClass('noselected');
+							})
+						})
+						if(init){
+							this.definition.shape.map(n => {
+							   n.Number=Z(`#box [type='${n.type}']`).length
+							    return n;
+							});
+							this.definition.color.map(n => {
+							    n.Number=Z(`#box [type][fill='${n.type}']`).length
+							    return n;
+							});
+							this.definition.arrow.map(n => {
+							   n.Number=Z(`#box [type='${n.type}']`).length
+							    return n;
+							});
+						}
+					},
+					dfclick(df){
+						let that=this, item=df.type;
+						that.dflist.includes(item) ?
+						    (that.dflist = _.remove(that.dflist, n => { return n !== item })) :
+						    that.dflist.push(item);
+						
+					},
 					repect(){},
 					pause(){
 						var that=this;
@@ -432,14 +530,18 @@
 								
 								return;
 							}
-								that.crttm=new Date(s+i*unit).format("MM-dd hh:mm");//yyyy-MM-dd hh:mm:ss
-							d.NodeDataset.map(n=>{
+								that.crttm=new Date(s+i*unit).format("yyyy-MM-dd hh:mm:ss");//yyyy-MM-dd hh:mm:ss
+								let S=0;
+								d.NodeDataset.map(n=>{
 								n.Size=Math.floor( Math.random()*30+50);
+								S=S+n.Size;
 								n.BackGroundColor=["#00b88c","#4394d6","#f06"][Math.floor(Math.random()*3)];
 							delete	n.element;
 							delete	n.text;
 								return n;
 							})
+							rawdata.Description.subTitle=`Snapshot:${that.crttm} -- Total WIP:${S}`;
+							
 							d.DataDataset.map(n=>{
 								n.Size=Math.floor( Math.random()*5+1);
 								n.Color=["#00b88c","#4394d6","#f06"][Math.floor(Math.random()*3)];
