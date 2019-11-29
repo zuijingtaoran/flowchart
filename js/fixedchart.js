@@ -71,7 +71,7 @@
                         ).fill('steelblue').move(...app.current_dot);
                         break;
                     case "circle":
-                        that.ele.shape[sid] = w.svg.circle(60).move(...app.current_dot).attr('class', 'ele-shape').fill('steelblue')
+                         that.ele.shape[sid]=w.svg.circle(60).move(+app.current_dot[0],+app.current_dot[1]).attr('class', 'ele-shape').fill('steelblue')
                         break;
 					default:
 						break;
