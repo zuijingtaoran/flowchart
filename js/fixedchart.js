@@ -35,7 +35,7 @@
 				}).stroke({'color':'transparent','width':'14'});
 				
 				if(a>that.viewBox[2]-that.itv){
-                    that.ele.scale[`b${b}`] = w.svg.text("" + b).move(a + 4, b - 8).font({ fill: 'steelblue', family: 'Inconsolata', size: 8 });
+                    that.ele.scale[`b${b}`] = w.svg.text("" + b).move(a+4 , b - 8).font({ fill: 'steelblue', family: 'Inconsolata', size: 8 });
 				}
 				}
 				
@@ -44,9 +44,12 @@
 			
 			that.bind();
         }
-        drawline() {
+        drawline(opacity) {
             var that = this,lc="";
-            let [shape, prop, sid] = [this.c.shape, this.c.prop, this.c.sid];
+            let [shape, prop, sid] = ["", "", ""];
+            that.c.shape = shape = app.current_shape,
+                that.c.prop = prop = app.current_prop, that.c.sid = sid = app.current_sid;
+            app.current_prop[0].value = sid;
             switch (shape) {
                 case "line":
                     that.ele.shape[sid] = w.svg.line(...that.linecache[0], ...that.linecache[1])
@@ -101,6 +104,7 @@
                     break;
 
             }
+            !!opacity && that.ele.shape[sid].attr('opacity', 0.6);
         }
         drawshape(opacity) {
             //draw other
@@ -183,7 +187,7 @@
                     break;
 
             }
-            that.ele.shape[sid].attr('shape', shape);
+            that.ele.shape[sid].attr('shape',shape);
             !!opacity && that.ele.shape[sid].attr('opacity', 0.6);
         }
         Berzier(x1, y1, x2, y2) {
@@ -192,14 +196,19 @@
 		bind(){
 			var that=this;
 			$('.ele-dot').mouseover(function(){
-				var $that=$(this);
+                var $that = $(this),
+                    category = "";
+                !!app.shape[app.current_shape] && (category = app.shape[app.current_shape]['category']);
+                if (!category) { return; }
                 app.current_dot = [+$that.attr('x'), +$that.attr('y')];
-                !!that.ele.shape[that.c.sid]&&  that.ele.shape[that.c.sid].attr('opacity')=="0.6" && that.ele.shape[that.c.sid].remove();
+               // !!that.ele.shape[that.c.sid] && that.ele.shape[that.c.sid].attr('opacity') == "0.6"  && that.ele.shape[that.c.sid].remove();
+             //   !!that.ele.shape[that.c.sid] && that.linecache[0].length > 1 && that.ele.shape[that.c.sid].remove();
+                $('[opacity="0.6"]').remove();
                 if (that.linecache[0].length > 1 && that.linecache[1].length === 0) {
                  
                     that.linecache[1] = [...app.current_dot];
-                    that.drawline();
-                } else if (app.current_shape.length > 0) {
+                    that.drawline(true);
+                } else if (app.shape[app.current_shape]['category'] !== "line" && app.current_shape.length > 0) {
 
                     that.drawshape(true);
                 }
@@ -212,13 +221,17 @@
               
 			})
             $('.ele-dot').click(function () {
-              let  category = app.shape[that.c.shape]['category']||"";
+                let prop, sid, shape;
+                that.c.shape = shape = app.current_shape,
+                    that.c.prop = prop = app.current_prop, that.c.sid = sid = app.current_sid;
+                app.current_prop[0].value = sid;
+                let category = app.shape[shape]['category'] || "";
                 if (that.linecache[1].length > 1) {
                     //draw 2
                     _.find(that.c.prop, function (o) { return o.label === "X1"; }).value = that.linecache[1][0];
                     _.find(that.c.prop, function (o) { return o.label === "Y1"; }).value = that.linecache[1][1];
                     app.SHAPE[that.c.sid] = that.c.prop;
-                  
+                    that.drawline();
 
                     that.linecache = [[], []];
 
