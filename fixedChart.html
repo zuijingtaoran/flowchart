@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -46,7 +46,13 @@
                 cursor: Pointer;
             }
 	.shape_slt img{ border:1px solid steelblue; }
-	
+            .el-form .el-form-item--mini {
+                margin-bottom: 6px;
+            }
+            .selected {
+                stroke: orange !important;
+                stroke-width: 2;
+            }
 		</style>
 	</head>
     <body>
@@ -71,44 +77,43 @@
                 </el-row>
             </div>
             <div class="left">
-                <el-card class="box-card">
-                    <div slot="header" class="clearfix">
-                        <span>Shape box</span>
+				<el-collapse v-model="activeNames" >
+				  <el-collapse-item title="Shape box" name="1">
+				    <div class="shapebox" v-for="a in Object.keys(shape)" :title="a"
+				         :class='current_shape===a?"shape_slt":""'
+				         @click="select_shape(a)">
+				        <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
+				    </div>
+				  </el-collapse-item>
+                  <el-collapse-item :title='!!current_shape?"["+current_shape+"]":""+"Property"' name="2">
+                      <!--:model="current_prop"-->
+                      <el-form ref="form"  label-width="90px" size='mini'>
+                          <el-form-item v-for="c in current_prop" :key="c.label" :label="c.label">
 
-                    </div>
-                    <div class="shapebox" v-for="a in Object.keys(shape)" :title="a"
-                         :class='current_shape===a?"shape_slt":""'
-                         @click="select_shape(a)">
-                        <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
-                    </div>
-                </el-card>
-
-                <el-card class="box-card">
-                    <div slot="header" class="clearfix">
-                        <span>{{!!current_shape?"["+current_shape+"]":""}}Property</span>
-
-                    </div>
-                    <div>
-                        <el-form ref="form" :model="config.area" label-width="90px" size='mini'>
-                            <el-form-item v-for="c in config.area" :key="c.label" :label="c.label">
-
-                                <el-select v-if="c.ele=='select'" v-model="c.value">
-                                    <el-option v-for="item in c.option"
-                                               :key="item"
-                                               :label="item"
-                                               :value="item">
-                                    </el-option>
-                                </el-select>
-                                <el-color-picker v-else-if="c.ele=='color'" v-model="c.value"></el-color-picker>
-                                <el-input v-else="c.ele=='input'" :type="c.type" v-model="c.value"></el-input>
-                            </el-form-item>
-                        </el-form>
-                    </div>
-                </el-card>
+                              <el-select v-if="c.ele=='select'" v-model="c.value">
+                                  <el-option v-for="item in c.option"
+                                             :key="item"
+                                             :label="item"
+                                             :value="item">
+                                  </el-option>
+                              </el-select>
+                              <el-color-picker v-else-if="c.ele=='color'" v-model="c.value"></el-color-picker>
+                              <el-input v-else="c.ele=='input'" :type="c.type"  :rows="2" v-model="c.value"></el-input>
+                          </el-form-item>
+                          <el-form-item>
+                              <el-button type="danger" icon="el-icon-delete" circle
+                                         v-show="!!current_shape" title="Remove"></el-button>
+                              <el-button type="success" title="Update"
+                                         style="background-color: steelblue; border: none;" @click="update"
+                                         icon="el-icon-check" circle></el-button>
+                          </el-form-item>
+                      </el-form>
+                  </el-collapse-item></el-collapse>
+               
 
             </div>
             <div class="paint" id='paint' style="cursor:url('http://s.xnimg.cn/imgpro/arrow/pre.cur');"></div>
-            <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefe; color:steelblue; font-size: 14px;">
+            <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefef; color:steelblue; font-size: 14px;">
                 {{!!current_dot[0]?`[${current_dot[0]},${current_dot[1]}]`:''}}
             </i>
         </div>
@@ -116,105 +121,152 @@
 
 
 
-        <script type="application/javascript">
-            let Main={
+        <script>
+            let Main = {
 
-                data(){return{
-                    current_dot:[20,300],
-                    current_shape:"",
-                    config:{
-                        area:[
-                            {label:"Name",ele:"input",type:"text",value:""},
-                            {label:"Size",ele:"input",type:"number",value:100},
-                            {label:"X",ele:"input",type:"number",value:0},
-                            {label:"Y",ele:"input",type:"number",value:0},
-                            {label:"Background",ele:"color",value:"#00b88c"},
-                            {label:"BorderColor",ele:"color",value:"#ff0066"},
-                            {label:"BorderWidth",ele:"input",type:"number",value:2},
-                            {label:"BorderStyle",ele:"select",type:"radio",option:["solid","dotted"],value:"solid"}
-                        ],
-                        reference:[],
-                        line:[]
+                data() {
+                    return {
+                        activeNames: ['1', '2'],
+                        current_dot: [20, 300],
+                        current_shape: "",
+                        current_prop: "",
+                        current_sid:"",
+                        SHAPE: {},
+                        config: {
+                            area: [
+                                { label: "Name", ele: "input", type: "text", value: "" },
+                                { label: "Width", ele: "input", type: "number", value: 80 },
+                                { label: "Height", ele: "input", type: "number", value: 56 },
+                                { label: "X", ele: "input", type: "number", value: 0 },
+                                { label: "Y", ele: "input", type: "number", value: 0 },
+                                { label: "Background", ele: "color", value: "#4682b4" },
+                                { label: "BorderColor", ele: "color", value: "#ff0066" },
+                                { label: "BorderWidth", ele: "input", type: "number", value: 2 },
+                                { label: "BorderStyle", ele: "select", type: "radio", option: ["solid", "dotted"], value: "solid" }
+                            ],
+                            reference: [
+                                { label: "Name", ele: "input", type: "text", value: "" },
+                                { label: "Width", ele: "input", type: "number", value: 100 },
+                                { label: "Height", ele: "input", type: "number", value: 100 },
+                                { label: "X", ele: "input", type: "number", value: 0 },
+                                { label: "Y", ele: "input", type: "number", value: 0 },
+                                { label: "URL", ele: "input", type: "textarea", value: "" },
+                                { label: "BorderColor", ele: "color", value: "#ff0066" },
+                                { label: "BorderWidth", ele: "input", type: "number", value: 2 },
+                                { label: "BorderStyle", ele: "select", type: "radio", option: ["solid", "dotted"], value: "solid" }
 
-                    },
-                    shape:{"rect":{
-                            category:'area',
-                            icon:'./shape/',
+                            ],
+                            line: [{ label: "Name", ele: "input", type: "text", value: "" },
+                                { label: "Width", ele: "input", type: "number", value: 100 },
+                                { label: "Height", ele: "input", type: "number", value: 100 },
+                                { label: "X", ele: "input", type: "number", value: 0 },
+                                { label: "Y", ele: "input", type: "number", value: 0 },
+                                { label: "X1", ele: "input", type: "number", value: 0 },
+                                { label: "Y1", ele: "input", type: "number", value: 0 },                            
+                                { label: "BorderColor", ele: "color", value: "#4682b4" },
+                                { label: "BorderWidth", ele: "input", type: "number", value: 2 },
+                                { label: "BorderStyle", ele: "select", type: "radio", option: ["solid", "dash"], value: "dash" }]
+
                         },
-                        "triangle":{
-                            category:'area',
-                            icon:'./shape/'
-                        },
-						"parallelogram":{ category:'area',
-                            icon:'./shape/'},
-						"rhombus":{ category:'area',
-                            icon:'./shape/'},
-                        "circle":{
-                            category:'area',
-                            icon:'./shape/'
-                        },
-                        "pentagon":{
-                            category:'area',
-                            icon:'./shape/'
-                        },"hexagon":{
-                            category:'area',
-                            icon:'./shape/'
-                        },
-                        "image":{category:'reference',
-                            icon:'./shape/'	},
-                            "iframe":{category:'reference',
-                                icon:'./shape/'	},
-                                "line":{
-                                    category:'line',
-                                        icon:'./shape/'
-                                },
+                        shape: {
+                            "rect": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            // "triangle":{
+                            //     category:'area',
+                            //     icon:'./shape/'
+                            // },
+                            "parallelogram": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "rhombus": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "circle": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "pentagon": {
+                                category: 'area',
+                                icon: './shape/'
+                            }, "hexagon": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "image": {
+                                category: 'reference',
+                                icon: './shape/'
+                            },
+                            "iframe": {
+                                category: 'reference',
+                                icon: './shape/'
+                            },
+                            "line": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
 
-                                "line-arrow":{
-                                    category:'line',
-                                        icon:'./shape/'
-                                },
-                                "curved":{
-                                    category:'line',
-                                        icon:'./shape/'
-                                },
+                            "line-arrow": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
+                            "curved": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
 
 
-                                "curved-arrow":{
-                                    category:'line',
-                                        icon:'./shape/'
-                                },
-                                "elbow-connector":{
-                                    category:'line',
-                                        icon:'./shape/'
-                                },
-                                "elbow-arrow-connector":{
-                                    category:'line',
-                                        icon:'./shape/'
-                                },
-                                "text":{
-                                    category:'text',
-                                        icon:'./shape/'
-                                }
+                            "curved-arrow": {
+                                category: 'line',
+                                icon: './shape/'
+                            }
+                            ,
+                           /* "elbow-connector": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
+                            "elbow-arrow-connector": {
+                                category: 'line',
+                                icon: './shape/'
+                            },*/
+                            "text": {
+                                category: 'text',
+                                icon: './shape/'
+                            }
 
                         }
 
 
-                }},
-                computed:{
+                    };
+                },
+                computed: {
 
                 },
-                methods:{
-                    select_shape(shape){
-                        let that=this;
-                        that.current_shape=shape;
+                methods: {
+                    update() {
+                        let that = this;
+                        console.log(JSON.stringify(that.current_prop)
+                        );
+
+                    },
+                    select_shape(shape) {
+                        let that = this;
+                        that.current_shape = shape;
+                        that.current_prop =
+                            JSON.parse(JSON.stringify(
+                                that.config[that.shape[shape]['category']]));
+                        that.current_sid = shape + "_" + Math.random().toString(36).substr(2);
 
                     }
                 }
 
 
-            }
-               var Ctor = Vue.extend(Main);
-            var app=   new Ctor().$mount('#box');
+            };
+                var Ctor = Vue.extend(Main);
+             var app=   new Ctor().$mount('#box');
         </script>
         <script type="text/javascript" src="js/fixedchart.js" defer=""></script>
     </body>

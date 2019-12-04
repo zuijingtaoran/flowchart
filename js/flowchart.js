@@ -293,7 +293,7 @@ w=window;
 			+x1 > +x2 && (
 				[x1, x2] = [x2, x1],
 				[y1, y2] = [y2, y1]);
-			return `M ${x1} ${y1} L ${x2} ${y2}`
+            return `M ${x1} ${y1} L ${x2} ${y2}`;
 
 
 			// if(a=='Curve'){

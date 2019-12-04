@@ -3,14 +3,19 @@
 		constructor() {
 			this.viewBox = [0, 0, document.getElementById('paint').clientWidth,document.getElementById('paint').clientHeight];
 			
-			this.ele={
-				scale:{},
-				dot:{},
-				shape:{}
-			},
-			this.itv=20,
-			
-			
+            this.ele = {
+                scale: {},
+                dot: {},
+                shape: {}
+
+            },
+                this.itv = 20,
+                this.linecache = [[], []],
+                this.c = {
+                shape:"",
+                sid:"",
+                prop:""
+                };
 			
 			this.init();
 		}
@@ -20,8 +25,8 @@
 				id: 'fiexedchart'
 			});
 			for(var a=0;a<that.viewBox[2];a=a+that.itv){
-				that.ele.scale[`a${a}`]=w.svg.text(""+a).move(a,that.viewBox[3]-that.itv).
-				font({ fill: 'steelblue', family: 'Inconsolata',size:8, anchor: 'middle' })
+                that.ele.scale[`a${a}`] = w.svg.text("" + a).move(a, that.viewBox[3] - that.itv).
+                    font({ fill: 'steelblue', family: 'Inconsolata', size: 8, anchor: 'middle' });
 				
 				for(var b=0;b<that.viewBox[3];b=b+that.itv){
 				that.ele.dot[`_${a}-${b}`]=	w.svg.circle(4).fill('#ddd').move(a-2,b-2).attr({"class":"ele-dot",
@@ -30,7 +35,7 @@
 				}).stroke({'color':'transparent','width':'14'});
 				
 				if(a>that.viewBox[2]-that.itv){
-					that.ele.scale[`b${b}`]=w.svg.text(""+b).move(a+4,b-8).font({ fill: 'steelblue', family: 'Inconsolata',size:8 })
+                    that.ele.scale[`b${b}`] = w.svg.text("" + b).move(a + 4, b - 8).font({ fill: 'steelblue', family: 'Inconsolata', size: 8 });
 				}
 				}
 				
@@ -38,46 +43,226 @@
 			
 			
 			that.bind();
-		}
-		bind(){
-			var that=this;
-			$('.ele-dot').mouseover(function(){
-				var $that=$(this);
-				app.current_dot=[$that.attr('x'),$that.attr('y')]
-				
-			})
-			$('.ele-dot').mouseout(function(){
-				var $that=$(this);
-				app.current_dot=["",""]
-				
-			})
-			$('.ele-dot').click(function(){
-				let shape=app.current_shape;
-				if(!shape){return}
-				let	sid="_"+Math.random().toString(36).substr(2); 
-				switch (shape){
-					case "rect":
-					that.ele.shape[sid]=w.svg.rect(60,60).move(...app.current_dot).attr('class','ele-shape').fill('steelblue')
-						break;
-                    case "hexagon":
-                        let r = 3;
-                        that.ele.shape[sid] = w.svg.polygon(
-                            `${300.0000 / r},${200.0000 / r} 
+        }
+        drawline() {
+            var that = this,lc="";
+            let [shape, prop, sid] = [this.c.shape, this.c.prop, this.c.sid];
+            switch (shape) {
+                case "line":
+                    that.ele.shape[sid] = w.svg.line(...that.linecache[0], ...that.linecache[1])
+                        .attr({
+                        'stroke': _.find(prop, function (o) { return o.label === "BorderColor"; }).value,
+                        'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
+                        'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value=== 'dash' ? '5' : '0',                        
+                        'class': 'ele-line'
+                       
+                    });
+                    break;
+                case "line-arrow":
+                     lc = _.find(prop, function (o) { return o.label === "BorderColor"; }).value;
+                    that.ele.shape[sid] = w.svg.line(...that.linecache[0], ...that.linecache[1])
+                        .attr({
+                            'stroke': lc,
+                            'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
+                            'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value === 'dash' ? '5' : '0',
+                            'class': 'ele-line'
+
+                        });
+                    that.ele.shape[sid].marker('end', 6, 6, function (add) {
+                        add.path('M 0 0 L 6 3 L 0 6 z').fill(lc);
+                    });
+                    break;
+                case "curved":
+                    lc = _.find(prop, function (o) { return o.label === "BorderColor"; }).value;
+                    that.ele.shape[sid] = w.svg.path(that.Berzier( ...that.linecache[0], ...that.linecache[1]))
+                        .attr({
+                            'stroke': lc,
+                            'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
+                            'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value === 'dash' ? '5' : '0',
+                            'class': 'ele-line', 'fill': 'none'
+
+                        });
+                    break;
+                case "curved-arrow":
+                    lc = _.find(prop, function (o) { return o.label === "BorderColor"; }).value;
+                    that.ele.shape[sid] = w.svg.path(that.Berzier(...that.linecache[0], ...that.linecache[1]))
+                        .attr({
+                            'stroke': lc,
+                            'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
+                            'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value === 'dash' ? '5' : '0',
+                            'class': 'ele-line','fill':'none'
+
+                        });
+                    that.ele.shape[sid].marker('end', 6, 6, function (add) {
+                        add.path('M 0 0 L 6 3 L 0 6 z').fill(lc);
+                    });
+                    break;
+                default:
+                    break;
+
+            }
+        }
+        drawshape(opacity) {
+            //draw other
+            let [r, that] = [0, this];
+            let prop, sid, shape;
+            that.c.shape = shape = app.current_shape,
+                that.c.prop = prop = app.current_prop, that.c.sid =sid = app.current_sid;
+            app.current_prop[0].value = sid;
+          
+           
+         
+            let ww = _.find(prop, function (o) { return o.label === "Width"; }).value,
+                hh = _.find(prop, function (o) { return o.label === "Height"; }).value;
+
+
+            _.find(prop, function (o) { return o.label === "X"; }).value = app.current_dot[0];
+            _.find(prop, function (o) { return o.label === "Y"; }).value = app.current_dot[1];
+            switch (shape) {
+                case "rect":
+                    that.ele.shape[sid] = w.svg.rect(ww, hh).move(app.current_dot[0]+10 /*- ww / 2*/, app.current_dot[1]+10 /*- hh / 2*/).attr({
+                        'class': 'ele-shape selected',
+                        'sid': sid
+                    }).fill('steelblue');
+                    break;
+                case "hexagon":
+
+                    r = 150 / ww;
+                    that.ele.shape[sid] = w.svg.polygon(
+                        `${300.0000 / r},${200.0000 / r} 
 						${250.0000 / r},${113.3975 / r} 
 						${150.0000 / r},${113.3975 / r} 
 						${100.0000 / r},${200.0000 / r} 
 						${150.0000 / r},${286.6025 / r} 
 						${250.0000 / r},${286.6025 / r}`
-                        ).fill('steelblue').move(...app.current_dot);
-                        break;
-                    case "circle":
-                         that.ele.shape[sid]=w.svg.circle(60).move(+app.current_dot[0],+app.current_dot[1]).attr('class', 'ele-shape').fill('steelblue')
-                        break;
-					default:
-						break;
-				}
+                    ).fill('steelblue').move(app.current_dot[0] /*- ww / 4*/, app.current_dot[1]/* - ww / 4*/).attr({
+                        'class': 'ele-shape selected',
+                        'sid': sid
+                    });
+                    break;
+                case "circle":
+                    that.ele.shape[sid] = w.svg.circle(ww).move(app.current_dot[0]/* - ww / 2*/, app.current_dot[1] /*- ww / 2*/).attr({
+                        'class': 'ele-shape selected',
+                        'sid': sid
+                    }).fill('steelblue');
+                    break;
+                case "rhombus":
+                    r = 100 / ww;
+                    that.ele.shape[sid] = w.svg.polygon(
+                        `${100 / r},${100 / r} ${
+                        175 / r}, ${50 / r} ${
+                        250 / r}, ${100 / r} ${
+                        175 / r}, ${150 / r}`
+                    ).fill('steelblue').move(app.current_dot[0]/* - ww / 2*/, app.current_dot[1]/* - ww / 2*/).attr({
+                        'class': 'ele-shape selected',
+                        'sid': sid
+                    });
+                    break;
+                //M 151.742 204.628 L 176.542 134.628 L 275.742 134.628 L 250.942 204.628 L 151.742 204.628 Z
+                case "parallelogram":
+                    r = ww / 50;
+                    that.ele.shape[sid] = w.svg.polygon(
+                        `${30 * r}, ${0 * r} ${
+                        100 * r}, ${0 * r} ${
+                        70 * r}, ${50 * r} ${
+                        0 * r}, ${50 * r}`
+                    ).fill('steelblue').move(app.current_dot[0]/* - ww / 2*/, app.current_dot[1] /*- ww / 2*/).attr({
+                        'class': 'ele-shape selected',
+                        'sid': sid
+                    });
+                    break;
+                case "pentagon":
+                    r = 100 / ww;
+                    that.ele.shape[sid] = w.svg.polygon(`73 378 134.818674 422.913896 111.20604200000002 495.586104 34.793957999999975 495.586104 11.181326000000013 422.913896`.split(' ').map(n => { return n / r; }).join(' ')
+                    ).fill('steelblue').move(app.current_dot[0] /*- ww / 2*/, app.current_dot[1] /*- ww / 2*/).attr({
+                        'class': 'ele-shape selected',
+                        'sid': sid
+                    });
+                    break;
+                default:
+                    break;
+
+            }
+            that.ele.shape[sid].attr('shape', shape);
+            !!opacity && that.ele.shape[sid].attr('opacity', 0.6);
+        }
+        Berzier(x1, y1, x2, y2) {
+            return `M${x1} ${y1} C${(x1 + x2) / 1.9} ${y1} ${x2} ${y2} ${x2} ${y2}`;
+        }
+		bind(){
+			var that=this;
+			$('.ele-dot').mouseover(function(){
+				var $that=$(this);
+                app.current_dot = [+$that.attr('x'), +$that.attr('y')];
+                !!that.ele.shape[that.c.sid]&&  that.ele.shape[that.c.sid].attr('opacity')=="0.6" && that.ele.shape[that.c.sid].remove();
+                if (that.linecache[0].length > 1 && that.linecache[1].length === 0) {
+                 
+                    that.linecache[1] = [...app.current_dot];
+                    that.drawline();
+                } else if (app.current_shape.length > 0) {
+
+                    that.drawshape(true);
+                }
 				
 			})
+			$('.ele-dot').mouseout(function(){
+				var $that=$(this);
+                app.current_dot = [0, 0]; that.linecache[1] = [];
+                
+              
+			})
+            $('.ele-dot').click(function () {
+              let  category = app.shape[that.c.shape]['category']||"";
+                if (that.linecache[1].length > 1) {
+                    //draw 2
+                    _.find(that.c.prop, function (o) { return o.label === "X1"; }).value = that.linecache[1][0];
+                    _.find(that.c.prop, function (o) { return o.label === "Y1"; }).value = that.linecache[1][1];
+                    app.SHAPE[that.c.sid] = that.c.prop;
+                  
+
+                    that.linecache = [[], []];
+
+                    return;
+                }
+                $('.selected').removeClass('selected');
+              
+                //draw line start
+                if (category == "line") {
+
+                    let x = _.find(that.c.prop, function (o) { return o.label === "X"; }).value, y0 = _.find(that.c.prop, function (o) { return o.label === "Y"; }).value;
+                   
+                    _.find(that.c.prop, function (o) { return o.label === "X"; }).value = app.current_dot[0];
+                    _.find(that.c.prop, function (o) { return o.label === "Y"; }).value = app.current_dot[1];
+                        that.linecache = [[...app.current_dot], []];
+
+                    
+                    return;
+                }
+                if (!that.c.shape) { return; }
+               
+             
+                app.SHAPE[that.c.sid] = app.current_prop;
+
+                that.drawshape();
+              
+              
+            });
+            $('#paint').delegate('.ele-shape', 'click', function (e) {
+
+                console.log($('.selected').length);
+                //$('.selected').removeClass('selected');
+                $('.ele-shape').each(function () {
+                    $(this).attr('class', $(this).attr('class').replace('selected', ''));
+                });
+                var $that = $(this);
+
+                app.current_prop = app.SHAPE[$that.attr('sid')];
+                app.current_shape = $that.attr('shape');
+                app.current_sid = $that.attr('sid');
+                $that.addClass('selected');
+                e.preventDefault();
+            });
+           
 		}
 		
 		
