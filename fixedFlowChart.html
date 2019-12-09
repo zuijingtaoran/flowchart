@@ -10,15 +10,15 @@
     <script type="text/javascript" src="js/com/svg.draggable.js"></script>
     <script src="./js/z.js">
     </script>
-    <!--<script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
-    <script src="http://cvpmdsip03/tools/js/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!--<script src="http://cvpmdsip03/tools/js/vue.js"></script>
     <script src="http://cvpmdsip03/tools/element-ui/lib/index.js"></script>
     <link rel="stylesheet" href="http://cvpmdsip03/tools/element-ui/lib/theme-chalk/index.css">
 
-    <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>
+    <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>-->
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" defer>
     <style type="text/css">
@@ -108,14 +108,14 @@
 
         .ifr-box {
              border: 1px solid transparent;
-            padding-bottom: 13px;
+          
             overflow: hidden;
           
         }
 
         foreignObject:hover {
             border: 1px solid steelblue;
-            resize: both;
+            
         }
 
         .ifr-shape {
@@ -149,7 +149,7 @@
                 height:auto;
                 position:absolute;
                 border:1px solid steelblue;
-                z-index:6; background-color:#fff; left:400px;
+                z-index:6; background-color:#fff; left:400px; display:none;
         }
     </style>
 
@@ -312,6 +312,7 @@
                 },
                 methods: {
                     select_shape(a) {
+                        Z('#menu').hide();
                         let that = this, prop = {
                             "fill": "steelblue",
                             "shape": a,
@@ -325,33 +326,70 @@
                             query += p + "=" + decodeURIComponent( prop[p]) + "&";
                         }
                       
-                        that.ELE[sid] = svg.foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': 'ifr-box' }).draggable(false);
-                        that.ELE[sid].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
+//                        that.ELE[sid] = svg.foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': 'ifr-box' });
+//                        that.ELE[sid].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
+//<div class='ifr-head' id='${sid}'>   
+//<i class="material-icons" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
+// <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
+//</div>
+//<iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/,'')}"></iframe>
+//</body>`;
+//                        that.offset = that.offset + 1;
+//                        Z('#' + sid).mouseenter(function (e) {
+//                            that.ELE[sid].draggable(true); console.log(sid, true);
+//                        })
+
+//                        Z('#' + sid).mouseout(function () {
+                          
+//                            that.ELE[sid].fixed();
+//                                console.log(sid, false);
+//                                that.offset = 0;
+                          
+                          
+//                        })
+
+
+                       
+                        that.ELE[sid] = svg.group().draggable();
+                        that.ELE[sid].on('dragstart', function (e) {
+
+                            Z('#menu').hide();
+                        });
+                        that.ELE[sid + "_b"] = that.ELE[sid].foreignObject(100, 100).move(400, 150).attr({ 'class': 'ifr-box' });
+                        that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
 <div class='ifr-head' id='${sid}'>   
 <i class="material-icons" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
  <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
 </div>
-<iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/,'')}"></iframe>
+<iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/, '')}"></iframe>
 </body>`;
-                        that.offset = that.offset + 1;
-                        Z('#' + sid).mouseenter(function (e) {
-                            that.ELE[sid].draggable(true); console.log(sid, true);
-                        })
+                        // g.plain('grouped draggable').move(400, 210);
+                        that.ELE[sid + "_d"] = that.ELE[sid].image('./icon/drag.svg',16, 16).move(500 - 16, 250 - 16).draggable();
 
-                        Z('#' + sid).mouseout(function () {
-                          
-                                that.ELE[sid].draggable(false);
-                                console.log(sid, false);
-                                that.offset = 0;
-                          
-                          
-                        })
+                        /* constraind with object */
+                        //e = draw.rect(100, 100).center(650, 150).draggable({ minX: 400, minY: 50, maxX: 800, maxY: 400 })
+                        that.ELE[sid + "_d"].on('dragstart', function (e) {
+
+                            console.log(this);
+                            e.stopPropagation(); e.preventDefault(); that.ELE[sid].draggable(false);
+                        });
+                        that.ELE[sid + "_d"].on('dragmove', function (e) {
+                            that.ELE[sid + "_b"].attr('width', this.x() - that.ELE[sid + "_b"].attr('x') + 16);
+                            that.ELE[sid + "_b"].attr('height',this.y() - that.ELE[sid + "_b"].attr('y') + 16);
+                        });
+                        that.ELE[sid + "_d"].on('dragend', function () {
+                            that.ELE[sid].draggable(true);
+                        });
+
+
+
                         Z(`#${sid}_cls`).click(function () {
                             that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
 
                         });
                         Z(`#${sid}_mu`).click(function () {
                             // that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
+                            Z('#menu').show();
                             Z('#menu').css({
                                 'top': +Z(this).parents('.ifr-box').attr('y') + 23 + 40 + "px"
 

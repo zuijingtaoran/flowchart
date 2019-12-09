@@ -16,10 +16,10 @@
 	</head>
     <body>
 
-        <div id="shape" >
-           
-            <svg id="svg" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height"  viewBox="0 0 1024 1024"  id="fiexedchart">
+        <div id="shape">
+
+            <svg id="svg" v-if="p.get('shape')=='hexagon'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" viewBox="0 0 1024 1024">
                 <path :fill="p.get('fill')"
                       d="M934.996 468.191 760.754 166.396c-13.807-23.914-47.394-43.308-75.012-43.308L337.258
 			 123.088c-27.613 0-61.203 19.39-75.012 43.308L88.004 468.191c-13.807 23.914-13.809 62.698
@@ -28,6 +28,36 @@
 
 
 
+            </svg>
+            <svg id="svg" v-else-if="p.get('shape')=='rect'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" :viewBox="'0 0 '+width+' '+height">
+
+                <rect :width="width" :height="height" :fill="p.get('fill')" />
+            </svg>
+            <svg id="svg" v-else-if="p.get('shape')=='circle'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" :viewBox="'0 0 '+width+' '+height">
+
+                <ellipse :cx="width/2" :cy="height/2" :rx="width/2" :ry="height/2" :fill="p.get('fill')" />
+            </svg>
+
+            <svg id="svg" v-else-if="p.get('shape')=='parallelogram'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" :viewBox="'0 0 '+width+' '+height">
+
+                <rect :width="width/1.5" :height="height" :fill="p.get('fill')" transform="
+
+                skewX(15)
+                " />
+            </svg>
+            <svg id="svg" v-else-if="p.get('shape')=='rhombus'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" viewBox="0 0 1457 1024">
+
+
+                <path :fill="p.get('fill')" d="M724.086154 45.686154L22.252308 527.123692l701.833846 481.476923 701.794461-481.476923-701.833846-481.516307z" p-id="2938"></path>
+            </svg>
+
+            <svg id="svg" v-else-if="p.get('shape')=='pentagon'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" viewBox="0 0 1024 1024">
+                <path d="M830.863 993.516l-632.914 0.967L1.44 393.093 512.927 20.444l512.609 371.082z" p-id="3563" :fill="p.get('fill')"></path>
             </svg>
         </div>
         <script type="text/javascript">
@@ -60,7 +90,7 @@
                 clearTimeout(method.timeout);
                 method.timeout = setTimeout(function () {
                     method.call(context);
-                }, 400);
+                }, 100);
             }
             function lazyload() {
                 location.reload();
