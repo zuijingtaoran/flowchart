@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -101,11 +101,11 @@
                               <el-input v-else="c.ele=='input'" :type="c.type"  :rows="2" v-model="c.value"></el-input>
                           </el-form-item>
                           <el-form-item>
-                              <el-button type="danger" icon="el-icon-delete" circle
+                              <el-button type="danger" icon="el-icon-delete" circle @click="remove"
                                          v-show="!!current_shape" title="Remove"></el-button>
-                              <el-button type="success" title="Update"
+                              <el-button type="success" title="Update" v-show="!!current_shape"
                                          style="background-color: steelblue; border: none;" @click="update"
-                                         icon="el-icon-check" circle></el-button>
+                                         icon="el-icon-refresh" circle></el-button>
                           </el-form-item>
                       </el-form>
                   </el-collapse-item></el-collapse>
@@ -134,7 +134,7 @@
                         SHAPE: {},
                         config: {
                             area: [
-                                { label: "Name", ele: "input", type: "text", value: "" },
+                                { label: "Name", ele: "input", type: "areatext", value: "" },
                                 { label: "Width", ele: "input", type: "number", value: 80 },
                                 { label: "Height", ele: "input", type: "number", value: 56 },
                                 { label: "X", ele: "input", type: "number", value: 0 },
@@ -157,8 +157,7 @@
 
                             ],
                             line: [{ label: "Name", ele: "input", type: "text", value: "" },
-                                { label: "Width", ele: "input", type: "number", value: 100 },
-                                { label: "Height", ele: "input", type: "number", value: 100 },
+                               
                                 { label: "X", ele: "input", type: "number", value: 0 },
                                 { label: "Y", ele: "input", type: "number", value: 0 },
                                 { label: "X1", ele: "input", type: "number", value: 0 },
@@ -248,10 +247,14 @@
                 methods: {
                     update() {
                         let that = this;
-                        console.log(JSON.stringify(that.current_prop)
-                        );
+                        console.log(JSON.stringify(that.current_prop));
+						Z(`[SID='${that.current_sid}']`).remove();
+						that.current_shape=that.current_shape.split('|')[0];
+						net.drawshape('slt');
+                           app.current_shape="";
 
                     },
+					remove(){},
                     select_shape(shape) {
                         let that = this;
                         that.current_shape = shape;
@@ -267,6 +270,18 @@
             };
                 var Ctor = Vue.extend(Main);
              var app=   new Ctor().$mount('#box');
+			 window.onload = function(){
+			           
+			            document.oncontextmenu = function(e){
+			                e.preventDefault();
+			            };
+			            document.getElementById("paint").onmousedown = function(e){
+			                if(e.button ==2){
+			                  app.current_shape="";
+							   Z('[opacity="0.6"]').remove();
+			                }
+			            }
+			 }
         </script>
         <script type="text/javascript" src="js/fixedchart.js" defer=""></script>
     </body>

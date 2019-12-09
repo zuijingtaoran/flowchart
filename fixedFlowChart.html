@@ -1,0 +1,384 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fixed Flow Chart</title>
+    <script src="./js/_.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script type="text/javascript" src="js/com/svg.js">
+    </script>
+    <script type="text/javascript" src="js/com/svg.draggable.js"></script>
+    <script src="./js/z.js">
+    </script>
+    <!--<script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <script src="http://cvpmdsip03/tools/js/vue.js"></script>
+    <script src="http://cvpmdsip03/tools/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="http://cvpmdsip03/tools/element-ui/lib/theme-chalk/index.css">
+
+    <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" defer>
+    <style type="text/css">
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        #box {
+            height: 100vh;
+            position: relative;
+        }
+
+        .head {
+            height: 40px;
+            border-bottom: 1px solid #333333;
+        }
+
+        .left {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            top: 40px;
+            border-right: 1px solid #333333;
+            width: 200px;
+        }
+
+        .paint {
+            position: absolute;
+            bottom: 0px;
+            left: 200px;
+            right: 0px;
+            top: 40px;
+            border-right: 1px solid #333333;
+        }
+
+        .shapebox {
+            display: inline-block;
+            height: 36px;
+            cursor: pointer;
+            margin: 2px;
+            width: auto;
+        }
+
+        .shape {
+            width: 20px;
+            height: 20px;
+            border: 1px solid transparent;
+        }
+
+            .shape:hover {
+                border: 1px dotted steelblue;
+            }
+
+        .el-card__header {
+            padding: 8px 4px;
+            background-color: steelblue;
+            color: #fff;
+        }
+
+        .el-card {
+            margin: 4px;
+        }
+
+        .el-card__body {
+            padding: 10px;
+        }
+
+        .ele-dot:hover {
+            stroke: #f06;
+            cursor: Pointer;
+        }
+
+        .shape_slt img {
+            border: 1px solid steelblue;
+        }
+
+        .el-form .el-form-item--mini {
+            margin-bottom: 6px;
+        }
+
+        .selected {
+            stroke: orange !important;
+            stroke-width: 2;
+        }
+
+        .ifr-box {
+             border: 1px solid transparent;
+            padding-bottom: 13px;
+            overflow: hidden;
+          
+        }
+
+        foreignObject:hover {
+            border: 1px solid steelblue;
+            resize: both;
+        }
+
+        .ifr-shape {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-top: none;
+            z-index: 3;
+        }
+
+        .ifr-head {
+            width: 100%;
+            height: 23px;
+            overflow: hidden;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            cursor: move;
+            z-index: 5;
+            text-align: right;
+            border-bottom: none;
+        }
+     #paint .ifr-head:hover{ background-color:#e5e5e5;
+                       
+        }
+            .material-icons {
+                color: steelblue;
+                cursor: pointer
+            }
+        #menu { width:210px;
+                height:auto;
+                position:absolute;
+                border:1px solid steelblue;
+                z-index:6; background-color:#fff; left:400px;
+        }
+    </style>
+
+</head>
+	<body>
+		<div id="box">
+		    <div class="head">
+		        <el-row>
+		            <el-col :span='4'>
+		                <b style="color: steelblue; line-height: 40px;">
+		                    Fixed Flow chart
+		                </b>
+		            </el-col>
+		            <el-col :span='16'>
+		                <div>
+		
+		
+		
+		
+		                </div>
+		
+		            </el-col>
+		            <el-col :span='3'></el-col>
+		        </el-row>
+		    </div>
+		    <div class="left">
+				<el-collapse v-model="activeNames" >
+				  <el-collapse-item title="Shape box" name="1">
+				    <div class="shapebox" v-for="a in Object.keys(shape)" :title="a"
+				         :class='current_shape===a?"shape_slt":""'
+				         @click="select_shape(a)">
+				        <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
+				    </div>
+				  </el-collapse-item>
+		        
+				  
+				  </el-collapse>
+		       
+		
+		    </div>
+		    <div class="paint" id='paint' style=""></div>
+		   <!-- <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefef; color:steelblue; font-size: 14px;">
+		        {{!!current_dot[0]?`[${current_dot[0]},${current_dot[1]}]`:''}}
+		    </i> -->
+            <div id="menu">
+                <el-form ref="form" label-width="90px" size='mini'>
+                    <el-form-item v-for="c in current_prop" :key="c.label" :label="c.label">
+
+                        <el-select v-if="c.ele=='select'" v-model="c.value">
+                            <el-option v-for="item in c.option"
+                                       :key="item"
+                                       :label="item"
+                                       :value="item">
+                            </el-option>
+                        </el-select>
+                        <el-color-picker v-else-if="c.ele=='color'" v-model="c.value"></el-color-picker>
+                        <el-input v-else="c.ele=='input'" :type="c.type" :rows="2" v-model="c.value"></el-input>
+                    </el-form-item>
+                   
+                </el-form>
+
+            </div>
+		</div>
+		<script>
+            let svg = null;
+            let Main = {
+                data() {
+                    return {
+                        ELE: {},
+                        current_shape: "",
+                        current_prop: [
+                            { label: "Name", ele: "input", type: "areatext", value: "" },
+                            { label: "Width", ele: "input", type: "number", value: 80 },
+                            { label: "Height", ele: "input", type: "number", value: 56 },
+                            { label: "X", ele: "input", type: "number", value: 0 },
+                            { label: "Y", ele: "input", type: "number", value: 0 },
+                            { label: "Background", ele: "color", value: "#4682b4" }
+                          
+                        ],
+                        shape: {
+                            "rect": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            // "triangle":{
+                            //     category:'area',
+                            //     icon:'./shape/'
+                            // },
+                            "parallelogram": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "rhombus": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "circle": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "pentagon": {
+                                category: 'area',
+                                icon: './shape/'
+                            }, "hexagon": {
+                                category: 'area',
+                                icon: './shape/'
+                            },
+                            "image": {
+                                category: 'reference',
+                                icon: './shape/'
+                            },
+                            "iframe": {
+                                category: 'reference',
+                                icon: './shape/'
+                            },
+                            "line": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
+
+                            "line-arrow": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
+                            "curved": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
+
+
+                            "curved-arrow": {
+                                category: 'line',
+                                icon: './shape/'
+                            }
+                            ,
+                            "elbow-connector": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
+                            "elbow-arrow-connector": {
+                                category: 'line',
+                                icon: './shape/'
+                            },
+                            "text": {
+                                category: 'text',
+                                icon: './shape/'
+                            }
+
+                        },
+                        activeNames: ['1', '2'],
+                        offset: 0
+                    };
+                },
+                mounted() {
+                    var that = this;
+                    svg = SVG().addTo('#paint').size(document.getElementById('paint').clientWidth, document.getElementById('paint').clientHeight).viewbox(0, 0, document.getElementById('paint').clientWidth,
+                        document.getElementById('paint').clientHeight).attr({
+                        id: 'fiexedchart'
+                    });
+                },
+                methods: {
+                    select_shape(a) {
+                        let that = this, prop = {
+                            "fill": "steelblue",
+                            "shape": a,
+                            w: 170,
+                            h: 150,
+                            x: 30 + that.offset * 15,
+                            y: 30 + that.offset * 15
+                        }, sid = a + "_" + Math.random().toString(36).substring(2, 6),
+                            query = "?";
+                        for (p in prop) {
+                            query += p + "=" + decodeURIComponent( prop[p]) + "&";
+                        }
+                      
+                        that.ELE[sid] = svg.foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': 'ifr-box' }).draggable(false);
+                        that.ELE[sid].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
+<div class='ifr-head' id='${sid}'>   
+<i class="material-icons" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
+ <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
+</div>
+<iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/,'')}"></iframe>
+</body>`;
+                        that.offset = that.offset + 1;
+                        Z('#' + sid).mouseenter(function (e) {
+                            that.ELE[sid].draggable(true); console.log(sid, true);
+                        })
+
+                        Z('#' + sid).mouseout(function () {
+                          
+                                that.ELE[sid].draggable(false);
+                                console.log(sid, false);
+                                that.offset = 0;
+                          
+                          
+                        })
+                        Z(`#${sid}_cls`).click(function () {
+                            that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
+
+                        });
+                        Z(`#${sid}_mu`).click(function () {
+                            // that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
+                            Z('#menu').css({
+                                'top': +Z(this).parents('.ifr-box').attr('y') + 23 + 40 + "px"
+
+                                , 'left': +Z(this).parents('.ifr-box').attr('x')+ + Z(this).parents('.ifr-box').attr('width')+200-210+ "px"
+                            });
+
+                        });
+                    }
+                }
+            };
+					var Ctor = Vue.extend(Main);
+            var app = new Ctor().$mount('#box');
+            //window.onload = function () {
+
+            //    document.oncontextmenu = function (e) {
+            //        e.preventDefault();
+            //    };
+            //    document.getElementById("paint").onmousedown = function (e) {
+            //        if (e.button == 2) {
+            //            for (a in app.ELE) {
+            //                app.ELE[a].draggable(false);
+            //                app.offset = 0;
+            //            }
+            //        }
+            //    }
+            //}
+
+		</script>
+	</body>
+</html>

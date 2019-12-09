@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="./js/vue.js"></script>
+		<style type="text/css">
+            body { width:100vw;
+                   height:100vh;
+                   padding:0px;
+                   margin:0px;
+                   overflow:hidden;
+            } 
+		</style>
+		
+	</head>
+    <body>
+
+        <div id="shape" >
+           
+            <svg id="svg" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                 xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height"  viewBox="0 0 1024 1024"  id="fiexedchart">
+                <path :fill="p.get('fill')"
+                      d="M934.996 468.191 760.754 166.396c-13.807-23.914-47.394-43.308-75.012-43.308L337.258
+			 123.088c-27.613 0-61.203 19.39-75.012 43.308L88.004 468.191c-13.807 23.914-13.809 62.698
+			  0 86.617l174.242 301.796c13.807 23.913 47.394 43.308 75.012 43.308l348.484 0c27.613 0
+			   61.202-19.39 75.012-43.308l174.242-301.796C948.803 530.895 948.806 492.11 934.996 468.191z" p-id="2173"></path>
+
+
+
+            </svg>
+        </div>
+        <script type="text/javascript">
+            var shape = new Vue({
+                el: '#shape',
+                data: {
+                    width: 100,
+                    height:100,
+                    p: {
+                        get() { }}
+                },
+                mounted() {
+                    this.width = document.body.clientWidth;
+                    this.height = document.body.clientHeight;
+                    this.p = new URLSearchParams(location.search.substr(1));
+                },
+                methods: {
+                    getQueryString(name) {
+                        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                        var r = window.location.search.substr(1).match(reg);
+                        if (r != null) return unescape(r[2]);
+                        return "";
+                    }
+                }
+            })
+            window.onresize = function () {
+                debounce(lazyload, window);
+            }
+            function debounce(method, context) {
+                clearTimeout(method.timeout);
+                method.timeout = setTimeout(function () {
+                    method.call(context);
+                }, 400);
+            }
+            function lazyload() {
+                location.reload();
+             //   console.log("onresize");
+            }
+        </script>
+    </body>
+</html>

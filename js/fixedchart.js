@@ -57,7 +57,7 @@
                         'stroke': _.find(prop, function (o) { return o.label === "BorderColor"; }).value,
                         'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
                         'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value=== 'dash' ? '5' : '0',                        
-                        'class': 'ele-line'
+                        'class': 'ele-line ele-shape'
                        
                     });
                     break;
@@ -68,7 +68,7 @@
                             'stroke': lc,
                             'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
                             'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value === 'dash' ? '5' : '0',
-                            'class': 'ele-line'
+                            'class': 'ele-line  ele-shape'
 
                         });
                     that.ele.shape[sid].marker('end', 6, 6, function (add) {
@@ -82,7 +82,7 @@
                             'stroke': lc,
                             'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
                             'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value === 'dash' ? '5' : '0',
-                            'class': 'ele-line', 'fill': 'none'
+                            'class': 'ele-line  ele-shape', 'fill': 'none'
 
                         });
                     break;
@@ -93,7 +93,7 @@
                             'stroke': lc,
                             'stroke-width': _.find(prop, function (o) { return o.label === "BorderWidth"; }).value,
                             'stroke-dasharray': _.find(prop, function (o) { return o.label === "BorderStyle"; }).value === 'dash' ? '5' : '0',
-                            'class': 'ele-line','fill':'none'
+                            'class': 'ele-line  ele-shape','fill':'none'
 
                         });
                     that.ele.shape[sid].marker('end', 6, 6, function (add) {
@@ -104,6 +104,7 @@
                     break;
 
             }
+			 that.ele.shape[sid].attr({'shape':shape,'sid':sid});
             !!opacity && that.ele.shape[sid].attr('opacity', 0.6);
         }
         drawshape(opacity) {
@@ -119,9 +120,13 @@
             let ww = _.find(prop, function (o) { return o.label === "Width"; }).value,
                 hh = _.find(prop, function (o) { return o.label === "Height"; }).value;
 
-
+if(opacity!=='slt'){
             _.find(prop, function (o) { return o.label === "X"; }).value = app.current_dot[0];
-            _.find(prop, function (o) { return o.label === "Y"; }).value = app.current_dot[1];
+            _.find(prop, function (o) { return o.label === "Y"; }).value = app.current_dot[1];}else{
+				
+				app.current_dot=[ _.find(prop, function (o) { return o.label === "X"; }).value,_.find(prop, function (o) { return o.label === "Y"; }).value ]
+				
+			}
             switch (shape) {
                 case "rect":
                     that.ele.shape[sid] = w.svg.rect(ww, hh).move(app.current_dot[0]+10 /*- ww / 2*/, app.current_dot[1]+10 /*- hh / 2*/).attr({
@@ -187,8 +192,8 @@
                     break;
 
             }
-            that.ele.shape[sid].attr('shape',shape);
-            !!opacity && that.ele.shape[sid].attr('opacity', 0.6);
+            that.ele.shape[sid].attr('shape',shape).fill( _.find(prop, function (o) { return o.label === "Background"; }).value);//
+            opacity===true && that.ele.shape[sid].attr('opacity', 0.6);
         }
         Berzier(x1, y1, x2, y2) {
             return `M${x1} ${y1} C${(x1 + x2) / 1.9} ${y1} ${x2} ${y2} ${x2} ${y2}`;
@@ -198,6 +203,7 @@
 			$('.ele-dot').mouseover(function(){
                 var $that = $(this),
                     category = "";
+					if(app.current_shape.indexOf('|slt')>-1){return;}
                 !!app.shape[app.current_shape] && (category = app.shape[app.current_shape]['category']);
                 if (!category) { return; }
                 app.current_dot = [+$that.attr('x'), +$that.attr('y')];
@@ -225,12 +231,13 @@
                 that.c.shape = shape = app.current_shape,
                     that.c.prop = prop = app.current_prop, that.c.sid = sid = app.current_sid;
                 app.current_prop[0].value = sid;
+				if(shape==""||shape.indexOf('|slt')>-1){return;}
                 let category = app.shape[shape]['category'] || "";
                 if (that.linecache[1].length > 1) {
                     //draw 2
                     _.find(that.c.prop, function (o) { return o.label === "X1"; }).value = that.linecache[1][0];
                     _.find(that.c.prop, function (o) { return o.label === "Y1"; }).value = that.linecache[1][1];
-                    app.SHAPE[that.c.sid] = that.c.prop;
+                    app.SHAPE[that.c.sid] = JSON.parse(JSON.stringify(that.c.prop)) ;
                     that.drawline();
 
                     that.linecache = [[], []];
@@ -254,10 +261,10 @@
                 if (!that.c.shape) { return; }
                
              
-                app.SHAPE[that.c.sid] = app.current_prop;
+                app.SHAPE[that.c.sid] =JSON.parse(JSON.stringify(app.current_prop)) ;
 
                 that.drawshape();
-              
+              app.current_sid=shape + "_" + Math.random().toString(36).substr(2);
               
             });
             $('#paint').delegate('.ele-shape', 'click', function (e) {
@@ -269,8 +276,9 @@
                 });
                 var $that = $(this);
 
-                app.current_prop = app.SHAPE[$that.attr('sid')];
-                app.current_shape = $that.attr('shape');
+                app.current_prop =JSON.parse(JSON.stringify(app.SHAPE[$that.attr('sid')])) ;
+				
+                app.current_shape = $that.attr('shape')+"|slt";
                 app.current_sid = $that.attr('sid');
                 $that.addClass('selected');
                 e.preventDefault();
