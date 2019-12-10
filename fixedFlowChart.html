@@ -20,12 +20,13 @@
 
     <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>-->
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" defer>
+    <link href="
+          " rel="stylesheet" defer>
     <style type="text/css">
         * {
             margin: 0px;
             padding: 0px;
-            box-sizing: border-box;
+            box-sizing: border-box;font-family:Arial;
         }
 
         #box {
@@ -71,12 +72,12 @@
         }
 
             .shape:hover {
-                border: 1px dotted steelblue;
+                border: 1px dotted #4682b4;
             }
 
         .el-card__header {
             padding: 8px 4px;
-            background-color: steelblue;
+            background-color: #4682b4;
             color: #fff;
         }
 
@@ -94,7 +95,7 @@
         }
 
         .shape_slt img {
-            border: 1px solid steelblue;
+            border: 1px solid #4682b4;
         }
 
         .el-form .el-form-item--mini {
@@ -114,7 +115,7 @@
         }
 
         foreignObject:hover {
-            border: 1px solid steelblue;
+            border: 1px solid #4682b4;
             
         }
 
@@ -142,14 +143,17 @@
                        
         }
             .material-icons {
-                color: steelblue;
+                color: #4682b4;
                 cursor: pointer
             }
         #menu { width:210px;
                 height:auto;
                 position:absolute;
-                border:1px solid steelblue;
+                border:1px solid #4682b4;
                 z-index:6; background-color:#fff; left:400px; display:none;
+                padding:15px 4px 15px 0px;
+                font-size:medium
+               
         }
     </style>
 
@@ -159,7 +163,7 @@
 		    <div class="head">
 		        <el-row>
 		            <el-col :span='4'>
-		                <b style="color: steelblue; line-height: 40px;">
+		                <b style="color: #4682b4; line-height: 40px;">
 		                    Fixed Flow chart
 		                </b>
 		            </el-col>
@@ -176,59 +180,113 @@
 		        </el-row>
 		    </div>
 		    <div class="left">
-				<el-collapse v-model="activeNames" >
-				  <el-collapse-item title="Shape box" name="1">
-				    <div class="shapebox" v-for="a in Object.keys(shape)" :title="a"
-				         :class='current_shape===a?"shape_slt":""'
-				         @click="select_shape(a)">
-				        <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
-				    </div>
-				  </el-collapse-item>
-		        
-				  
-				  </el-collapse>
+                <el-collapse v-model="activeNames">
+                    <el-collapse-item title="Shape box" name="1">
+                        <div class="shapebox" v-for="a in Object.keys(shape)" :title="a"
+                             :class='current_shape===a?"shape_slt":""'
+                             @click="select_shape(a,shape[a]['category'])">
+                            <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
+                        </div>
+                    </el-collapse-item>
+                    <el-collapse-item title="Layout" name="2">
+                        <el-row>
+                            <el-col span="20">
+                                Tool icon<el-switch v-model="toolicon" size="mini"
+                                                    active-color="steelblue"
+                                                    inactive-color="#eee">
+                                </el-switch>
+                            </el-col>
+                            <el-col span="4">
+
+                                <i class="material-icons" @click="saveLayout" title="Save layout">save</i>
+                            </el-col>
+                        </el-row>
+                       
+
+
+                    </el-collapse-item>
+
+                </el-collapse>
 		       
 		
 		    </div>
 		    <div class="paint" id='paint' style=""></div>
-		   <!-- <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefef; color:steelblue; font-size: 14px;">
+		   <!-- <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefef; color:#4682b4; font-size: 14px;">
 		        {{!!current_dot[0]?`[${current_dot[0]},${current_dot[1]}]`:''}}
 		    </i> -->
             <div id="menu">
                 <el-form ref="form" label-width="90px" size='mini'>
-                    <el-form-item v-for="c in current_prop" :key="c.label" :label="c.label">
-
-                        <el-select v-if="c.ele=='select'" v-model="c.value">
-                            <el-option v-for="item in c.option"
-                                       :key="item"
-                                       :label="item"
-                                       :value="item">
-                            </el-option>
-                        </el-select>
-                        <el-color-picker v-else-if="c.ele=='color'" v-model="c.value"></el-color-picker>
-                        <el-input v-else="c.ele=='input'" :type="c.type" :rows="2" v-model="c.value"></el-input>
+                    <el-form-item >
+                        <b>Property window</b>
                     </el-form-item>
-                   
+                        <el-form-item v-for="c in Object.keys(prop)" :key="config[c]['label']" :label="config[c]['label']">
+
+
+                            <el-select v-if="config[c].ele=='select'" v-model="prop[c]" :disabled="config[c].disabled">
+                                <el-option v-for="item in config[c].option"
+                                           :key="item"
+                                           :label="item"
+                                           :value="item">
+                                </el-option>
+                            </el-select>
+                            <el-color-picker v-else-if="config[c].ele=='color'" v-model="prop[c]" :disabled="config[c].disabled"></el-color-picker>
+                            <el-input v-else="config[c].ele=='input'" :type="config[c].type" :rows="2" v-model="prop[c]" :disabled="config[c].disabled"></el-input>
+                        </el-form-item>
+                        <el-form-item style="text-align:right">
+                            <i class="material-icons" title="Refresh" @click="ref">refresh</i>
+
+                        </el-form-item>
+
                 </el-form>
 
             </div>
 		</div>
 		<script>
             let svg = null;
+            let lineDragDot = 30;
             let Main = {
+                watch: {
+                    toolicon(v) {
+                        v ? Z('.toolicon').show() : Z('.toolicon').hide();
+                    }
+                },
                 data() {
                     return {
+                        toolicon: true,
                         ELE: {},
+                        obj: {},
                         current_shape: "",
-                        current_prop: [
-                            { label: "Name", ele: "input", type: "areatext", value: "" },
-                            { label: "Width", ele: "input", type: "number", value: 80 },
-                            { label: "Height", ele: "input", type: "number", value: 56 },
-                            { label: "X", ele: "input", type: "number", value: 0 },
-                            { label: "Y", ele: "input", type: "number", value: 0 },
-                            { label: "Background", ele: "color", value: "#4682b4" }
+                        prop: {},
+                        sid:'',
+                        config: {
+                            name: { label: "Name", ele: "input", type: "areatext", value: "", disabled: false },
+                            shape: { label: "Shape", ele: "input", type: "text", value: "", disabled: true },
+                            category: { label: "Category", ele: "input", type: "text", value: "", disabled: true },
+                            w: { label: "Width", ele: "input", type: "number", value: 80, disabled: false },
+                            h: { label: "Height", ele: "input", type: "number", value: 56, disabled: false  },
+                            x: { label: "X1", ele: "input", type: "number", value: 0, disabled: false  },
+                            y: { label: "Y1", ele: "input", type: "number", value: 0, disabled: false },
+                            x2: { label: "X2", ele: "input", type: "number", value: 0, disabled: false },
+                            y2: { label: "Y2", ele: "input", type: "number", value: 0, disabled: false },
+                            fill: { label: "fill", ele: "color", value: "#4682b4", disabled: false },
+                            BorderColor: {
+                                 label: "BorderColor", ele: "color", value: "#4682b4", disabled: false 
+                            },
+                            BorderWidth: {
+                                label: "BorderWidth", ele: "input", type: "number", value: "4", disabled: false 
+                            },
+                            BorderStyle: {
+                                label: "BorderStyle",ele: "select", type: "radio", option: ["solid", "dash"], value: "dash"
+                            },
+                            url: { label: "Reference", ele: "input", type: "text", value: "", disabled: true },
+                            direct: { label: "Direct", ele: "select", type: "radio", value: "", disabled: false, option: ["up", "down"] },
+                            'size': { label: "Size", ele: "select", type: "radio", value: "", disabled: false, option: ["small", "medium", 'large', 'larger'] },
                           
-                        ],
+                            'text': { label: "Description", ele: "input", value: "", disabled: false }
+
+                    
+
+                },
                         shape: {
                             "rect": {
                                 category: 'area',
@@ -311,111 +369,364 @@
                     });
                 },
                 methods: {
-                    select_shape(a) {
+                    saveLayout() {
+                        alert(JSON.stringify(this.obj))
+                    },
+                    polyline(x1, y1, x2, y2, direct) {
+                        if (direct == 'up') {
+                            //M0,0 40,0 40,60
+                            return `M${x1},${y1} ${x2},${y1} ${x2},${y2}`;
+                        } else {
+                            return `M${x1},${y1} ${x1},${y2} ${x2},${y2}`;
+                        }
+                    },
+                    Berzier(x1, y1, x2, y2, direct) {
+                        if (direct == 'up') {
+                            return `M${x1} ${y1} C${(x1 + x2) / 1.9} ${y1} ${x2} ${y2} ${x2} ${y2}`;
+                        } else {
+                            return `M${x1} ${y1} C${(x1 + x2) / 1.9} ${y2} ${x2} ${y2} ${x2} ${y2}`;
+                        }
+                    },
+                    ref() {
+                        //  alert(JSON.stringify(this.prop));
+                        let prop = JSON.parse(JSON.stringify(this.prop));
+                        this.select_shape(prop.shape, prop.category, prop, this.sid);
+                    },
+                    select_shape(a, area, prop, sid) {
+
                         Z('#menu').hide();
-                        let that = this, prop = {
-                            "fill": "steelblue",
-                            "shape": a,
-                            w: 170,
-                            h: 150,
-                            x: 30 + that.offset * 15,
-                            y: 30 + that.offset * 15
-                        }, sid = a + "_" + Math.random().toString(36).substring(2, 6),
+                        let that = this,
                             query = "?";
-                        for (p in prop) {
-                            query += p + "=" + decodeURIComponent( prop[p]) + "&";
+                        that.toolicon = true;
+                        sid = sid || a + "_" + Math.random().toString(36).substring(2, 6);
+                        //**** clear ele,obj
+                       try {
+                           !!that.ELE[sid]&&   that.ELE[sid].remove();
+                            delete that.obj[sid];
+                       } catch (e) { }
+                        //****
+                        if (!prop) {
+                            if (area === "line") {
+                                prop = {
+                                    "name": sid,
+                                    "shape": a,
+                                    "category": area,
+
+                                    x: 30 + that.offset * 15,
+                                    y: 30 + that.offset * 15,
+                                    x2: 230 + that.offset * 15,
+                                    y2: 230 + that.offset * 15,
+                                    direct: 'up',
+                                    "BorderColor": "#4682b4",
+                                    "BorderWidth": "4",
+                                    "BorderStyle": "solid"
+
+
+                                };
+
+                            } else if (area == 'area') {
+                                prop = {
+                                    "name": sid,
+                                    "shape": a,
+                                    "category": area,
+
+                                    w: 170,
+                                    h: 150,
+                                    x: 30 + that.offset * 15,
+                                    y: 30 + that.offset * 15,
+                                    "fill": "#4682b4",
+                                    url: "blank:"
+                                };
+                            } else if (area == 'text') {
+                                prop = {
+                                    "name": sid,
+                                    "shape": a,
+                                    "category": area,                                  
+                                    x: 30 + that.offset * 15,
+                                    y: 30 + that.offset * 15,
+                                    size: "medium",
+                                    fill: "#999999",
+                                    text:"text..."
+                                   
+                                };
+                            }
                         }
                       
-//                        that.ELE[sid] = svg.foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': 'ifr-box' });
-//                        that.ELE[sid].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
-//<div class='ifr-head' id='${sid}'>   
-//<i class="material-icons" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
-// <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
-//</div>
-//<iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/,'')}"></iframe>
-//</body>`;
-//                        that.offset = that.offset + 1;
-//                        Z('#' + sid).mouseenter(function (e) {
-//                            that.ELE[sid].draggable(true); console.log(sid, true);
-//                        })
+                        for (p in prop) {
+                            query += p + "=" + encodeURIComponent( prop[p]) + "&";
+                        }
+                      
 
-//                        Z('#' + sid).mouseout(function () {
-                          
-//                            that.ELE[sid].fixed();
-//                                console.log(sid, false);
-//                                that.offset = 0;
-                          
-                          
-//                        })
 
 
                        
                         that.ELE[sid] = svg.group().draggable();
-                        that.ELE[sid].on('dragstart', function (e) {
+                        
+                        //
+                        that.obj[sid] = prop;//obj
+                        if (area === "line") {
+                            that.ELE[sid].on('dragstart', function (e) {
 
-                            Z('#menu').hide();
-                        });
-                        that.ELE[sid + "_b"] = that.ELE[sid].foreignObject(100, 100).move(400, 150).attr({ 'class': 'ifr-box' });
-                        that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
+                                Z('#menu').hide();
+                            });
+                            that.ELE[sid].on('dragend', function (e) {
+                                if (a.includes('curved') || a.includes('elbow')) {
+                                    that.ELE[sid + "_l"].attr('x1', that.ELE[sid + "_s"].attr('x') + lineDragDot / 2);
+                                    that.ELE[sid + "_l"].attr('y1', that.ELE[sid + "_s"].attr('y') + lineDragDot / 2);
+                                    that.ELE[sid + "_l"].attr('x2', that.ELE[sid + "_e"].attr('x') + lineDragDot / 2);
+                                    that.ELE[sid + "_l"].attr('y2', that.ELE[sid + "_e"].attr('y') + lineDragDot / 2);
+                                }
+                                prop.x = that.ELE[sid + "_l"].attr('x1');
+                                prop.y = that.ELE[sid + "_l"].attr('y1');
+                                prop.x2 = that.ELE[sid + "_l"].attr('x2');
+                                prop.x2 = that.ELE[sid + "_l"].attr('x2');
+
+                            });//set prop x,y,x2,y2
+
+                            that.ELE[sid + '_b'] = that.ELE[sid].foreignObject(60, 25).move(prop.x - 30, prop.y - 25).attr({ 'class': 'ifr-box' });
+                            that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
 <div class='ifr-head' id='${sid}'>   
-<i class="material-icons" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
- <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
+<i class="material-icons toolicon" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
+ <i class="material-icons toolicon" title="Close" id="${sid}_cls" tid=${sid}>close</i>`;
+                            switch (a) {
+                                case "line-arrow":
+                                    that.ELE[sid + '_l'] = that.ELE[sid].line(prop.x, prop.y, prop.x2, prop.y2)
+                                        .attr({
+                                            'stroke': prop.BorderColor,
+                                            'stroke-width': prop.BorderWidth,
+                                            'stroke-dasharray': prop.BorderStyle == 'dash' ? 5 : 0,
+                                            'class': 'ele-line ele-shape'
+
+                                        });
+                                    that.ELE[sid + '_l'].marker('end', 6, 6, function (add) {
+                                        add.path('M 0 0 L 6 3 L 0 6 z').fill(prop.BorderColor);
+                                    });
+                                    //that.ELE[sid + '_l'].marker('start', 3, 3, function (add) {
+                                    //    add.rect(2, 3).fill('#00b88c');
+                                    //});
+                                    break;
+                                case "line":
+                                    that.ELE[sid + '_l'] = that.ELE[sid].line(prop.x, prop.y, prop.x2, prop.y2)
+                                        .attr({
+                                            'stroke': prop.BorderColor,
+                                            'stroke-width': prop.BorderWidth,
+                                            'stroke-dasharray': prop.BorderStyle == 'dash' ? 5 : 0,
+                                            'class': 'ele-line ele-shape'
+
+
+                                        });
+                                    //that.ELE[sid + '_l'].marker('end', 6, 6, function (add) {
+                                    //    add.path('M 0 0 L 6 3 L 0 6 z').fill(prop.BorderColor);
+                                    //});
+                                    break;
+                                case "curved":
+                                    that.ELE[sid + '_l'] = that.ELE[sid].path(that.Berzier(prop.x, prop.y, prop.x2, prop.y2, prop.direct))
+                                        .attr({
+                                            'stroke': prop.BorderColor,
+                                            'stroke-width': prop.BorderWidth,
+                                            'stroke-dasharray': prop.BorderStyle == 'dash' ? 5 : 0,
+                                            'class': 'ele-line ele-shape', 'fill': 'none',
+                                            x1: prop.x,
+                                            y1: prop.y,
+                                            x2: prop.x2,
+                                            y2: prop.y2
+
+                                        });
+                                    break;
+                                case "curved-arrow":
+                                    that.ELE[sid + '_l'] = that.ELE[sid].path(that.Berzier(prop.x, prop.y, prop.x2, prop.y2, prop.direct))
+                                        .attr({
+                                            'stroke': prop.BorderColor,
+                                            'stroke-width': prop.BorderWidth,
+                                            'stroke-dasharray': prop.BorderStyle == 'dash' ? 5 : 0,
+                                            'class': 'ele-line ele-shape', 'fill': 'none',
+                                            x1: prop.x,
+                                            y1: prop.y,
+                                            x2: prop.x2,
+                                            y2: prop.y2
+
+                                        });
+                                    that.ELE[sid + '_l'].marker('end', 6, 6, function (add) {
+                                        add.path('M 0 0 L 6 3 L 0 6 z').fill(prop.BorderColor);
+                                    });
+                                    break;
+                                case "elbow-connector":
+                                    that.ELE[sid + '_l'] = that.ELE[sid].path(that.polyline(prop.x, prop.y, prop.x2, prop.y2, prop.direct))
+                                        .attr({
+                                            'stroke': prop.BorderColor,
+                                            'stroke-width': prop.BorderWidth,
+                                            'stroke-dasharray': prop.BorderStyle == 'dash' ? 5 : 0,
+                                            'class': 'ele-line ele-shape', 'fill': 'none',
+                                            x1: prop.x,
+                                            y1: prop.y,
+                                            x2: prop.x2,
+                                            y2: prop.y2
+
+                                        });
+                                    break;
+                                case "elbow-arrow-connector":
+                                    that.ELE[sid + '_l'] = that.ELE[sid].path(that.polyline(prop.x, prop.y, prop.x2, prop.y2, prop.direct))
+                                        .attr({
+                                            'stroke': prop.BorderColor,
+                                            'stroke-width': prop.BorderWidth,
+                                            'stroke-dasharray': prop.BorderStyle == 'dash' ? 5 : 0,
+                                            'class': 'ele-line ele-shape', 'fill': 'none',
+                                            x1: prop.x,
+                                            y1: prop.y,
+                                            x2: prop.x2,
+                                            y2: prop.y2
+
+                                        });
+                                    that.ELE[sid + '_l'].marker('end', 6, 6, function (add) {
+                                        add.path('M 0 0 L 6 3 L 0 6 z').fill(prop.BorderColor);
+                                    });
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                            that.ELE[sid + '_s'] = that.ELE[sid].rect(lineDragDot, lineDragDot).fill('#ccc').attr('class','toolicon').opacity(0.4).move(prop.x - lineDragDot / 2, prop.y - lineDragDot / 2).draggable();
+                            that.ELE[sid + '_e'] = that.ELE[sid].rect(lineDragDot, lineDragDot).fill('#ccc').attr('class', 'toolicon').opacity(0.4).move(prop.x2 - lineDragDot / 2, prop.y2 - lineDragDot / 2).draggable();
+                            that.ELE[sid + "_s"].on('dragstart', function (e) {
+
+                                console.log(this);
+                                e.stopPropagation(); e.preventDefault(); that.ELE[sid].draggable(false);
+                            });
+                            that.ELE[sid + "_s"].on('dragmove', function (e) {
+                                let [aa, bb] = [this.x() + lineDragDot / 2, this.y() + lineDragDot / 2];
+                                that.ELE[sid + "_l"].attr('x1', aa);
+                                that.ELE[sid + "_l"].attr('y1', bb);
+                                if (a.includes('curved')) { that.ELE[sid + "_l"].attr('d', that.Berzier(aa, bb, prop.x2, prop.y2, prop.direct)); }
+                                else if (a.includes('elbow')) {
+                                    that.ELE[sid + "_l"].attr('d', that.polyline(aa, bb, prop.x2, prop.y2, prop.direct));
+                                }
+
+                                prop.x = aa;
+                                prop.y = bb;
+
+                                that.ELE[sid + "_b"].attr('x', this.x() - 30);
+                                that.ELE[sid + "_b"].attr('y', this.y() - 20);
+                            });
+                            that.ELE[sid + "_s"].on('dragend', function () {
+                                that.ELE[sid].draggable(true);
+                            });
+                            that.ELE[sid + "_e"].on('dragstart', function (e) {
+
+                                console.log(this);
+                                e.stopPropagation(); e.preventDefault(); that.ELE[sid].draggable(false);
+                            });
+                            that.ELE[sid + "_e"].on('dragmove', function (e) {
+                                let [cc, dd] = [this.x() + lineDragDot / 2, this.y() + lineDragDot / 2];
+                                that.ELE[sid + "_l"].attr('x2', cc);
+                                that.ELE[sid + "_l"].attr('y2', dd);
+                                if (a.includes('curved')) {
+                                    that.ELE[sid + "_l"].attr('d', that.Berzier(prop.x, prop.y, cc, dd, prop.direct));
+                                } else if (a.includes('elbow')) {
+                                    that.ELE[sid + "_l"].attr('d', that.polyline(prop.x, prop.y, cc, dd, prop.direct));
+                                }
+
+                                prop.x2 = cc;
+                                prop.y2 = dd;
+                            });
+                            that.ELE[sid + "_e"].on('dragend', function () {
+                                that.ELE[sid].draggable(true);
+                            });
+
+
+                        } else if (area === "area" || area == "reference") {
+                            that.ELE[sid].on('dragstart', function (e) {
+
+                                Z('#menu').hide();
+                            });
+                            that.ELE[sid].on('dragend', function (e) {
+                                prop.x = that.ELE[sid + "_b"].attr('x');
+                                prop.y = that.ELE[sid + "_b"].attr('y');
+
+
+                            });//set prop x,y,x2,y2
+                            that.ELE[sid + "_b"] = that.ELE[sid].foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': 'ifr-box' });
+
+                            if (area === "reference") {
+                                that.config.url.disabled = false;
+                            } else {
+                                prop.url = `./shape.html${query.replace(/&$/, '')}`;
+                            }
+                            that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
+<div class='ifr-head' id='${sid}'>   
+<i class="material-icons toolicon" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
+ <i class="material-icons toolicon" title="Close" id="${sid}_cls" tid=${sid}>close</i>
 </div>
-<iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/, '')}"></iframe>
+<iframe class="ifr-shape"  frameborder="0" src="${prop.url}"></iframe>
 </body>`;
-                        // g.plain('grouped draggable').move(400, 210);
-                        that.ELE[sid + "_d"] = that.ELE[sid].image('./icon/drag.svg',16, 16).move(500 - 16, 250 - 16).draggable();
 
-                        /* constraind with object */
-                        //e = draw.rect(100, 100).center(650, 150).draggable({ minX: 400, minY: 50, maxX: 800, maxY: 400 })
-                        that.ELE[sid + "_d"].on('dragstart', function (e) {
+                            // g.plain('grouped draggable').move(400, 210);
+                            that.ELE[sid + "_d"] = that.ELE[sid].image('./icon/drag.svg', 16, 16).attr('class', 'toolicon').move(prop.x + prop.w - 16, prop.h + prop.y - 16).draggable();
 
-                            console.log(this);
-                            e.stopPropagation(); e.preventDefault(); that.ELE[sid].draggable(false);
-                        });
-                        that.ELE[sid + "_d"].on('dragmove', function (e) {
-                            that.ELE[sid + "_b"].attr('width', this.x() - that.ELE[sid + "_b"].attr('x') + 16);
-                            that.ELE[sid + "_b"].attr('height',this.y() - that.ELE[sid + "_b"].attr('y') + 16);
-                        });
-                        that.ELE[sid + "_d"].on('dragend', function () {
-                            that.ELE[sid].draggable(true);
-                        });
+                            /* constraind with object */
+                            //e = draw.rect(100, 100).center(650, 150).draggable({ minX: 400, minY: 50, maxX: 800, maxY: 400 })
+                            that.ELE[sid + "_d"].on('dragstart', function (e) {
+
+                                console.log(this);
+                                e.stopPropagation(); e.preventDefault(); that.ELE[sid].draggable(false);
+                            });
+                            that.ELE[sid + "_d"].on('dragmove', function (e) {
+                                let [aa, bb] = [this.x() - that.ELE[sid + "_b"].attr('x') + 16, this.y() - that.ELE[sid + "_b"].attr('y') + 16];
+                                that.ELE[sid + "_b"].attr('width', aa);
+                                that.ELE[sid + "_b"].attr('height', bb);
+                                prop.w = aa; prop.h = bb;
+                            });
+                            that.ELE[sid + "_d"].on('dragend', function () {
+                                that.ELE[sid].draggable(true);
+                            });
+
+                        } else if (area == 'text') {
+                            that.ELE[sid].on('dragstart', function (e) {
+
+                                Z('#menu').hide();
+                            });
+                            that.ELE[sid].on('dragend', function (e) {
+                                prop.x = that.ELE[sid + "_t"].attr('x');
+                                prop.y = that.ELE[sid + "_t"].attr('y');
 
 
+                            });
+
+
+                            that.ELE[sid + '_b'] = that.ELE[sid].foreignObject(60, 25).move(prop.x - 30, prop.y - 25).attr({ 'class': 'ifr-box' });
+                            that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
+<div class='ifr-head' id='${sid}'>   
+<i class="material-icons toolicon" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
+ <i class="material-icons toolicon" title="Close" id="${sid}_cls" tid=${sid}>close</i>`;
+                            that.ELE[sid + '_t'] = that.ELE[sid].text(prop.text).move(prop.x, prop.y).font({
+                                fill: prop.fill,
+                                size: prop.size
+                            })
+
+                        }
 
                         Z(`#${sid}_cls`).click(function () {
                             that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
+                            delete app.obj[Z(this).attr('tid')];
 
                         });
                         Z(`#${sid}_mu`).click(function () {
                             // that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
-                            Z('#menu').show();
+                            
                             Z('#menu').css({
                                 'top': +Z(this).parents('.ifr-box').attr('y') + 23 + 40 + "px"
 
                                 , 'left': +Z(this).parents('.ifr-box').attr('x')+ + Z(this).parents('.ifr-box').attr('width')+200-210+ "px"
                             });
-
+                            app.prop = app.obj[Z(this).attr('tid')];
+                            app.sid = Z(this).attr('tid');
+                            Z('#menu').show();
                         });
                     }
                 }
             };
 					var Ctor = Vue.extend(Main);
             var app = new Ctor().$mount('#box');
-            //window.onload = function () {
-
-            //    document.oncontextmenu = function (e) {
-            //        e.preventDefault();
-            //    };
-            //    document.getElementById("paint").onmousedown = function (e) {
-            //        if (e.button == 2) {
-            //            for (a in app.ELE) {
-            //                app.ELE[a].draggable(false);
-            //                app.offset = 0;
-            //            }
-            //        }
-            //    }
-            //}
+           
 
 		</script>
 	</body>

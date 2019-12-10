@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -35,8 +35,8 @@
 			}
 			.shapebox{ display: inline-block; height: 36px;cursor:pointer; margin: 2px; width: auto; }
 		.shape{width: 20px; height: 20px;border: 1px solid transparent;  }
-	.shape:hover{border: 1px dotted steelblue;}
-	.el-card__header{ padding:8px 4px; background-color: steelblue; color: #fff;}
+	.shape:hover{border: 1px dotted #4682b4;}
+	.el-card__header{ padding:8px 4px; background-color: #4682b4; color: #fff;}
 	
 	.el-card{ margin: 4px;}
 	.el-card__body{ padding: 10px;}
@@ -45,7 +45,7 @@
                 stroke: #f06;
                 cursor: Pointer;
             }
-	.shape_slt img{ border:1px solid steelblue; }
+	.shape_slt img{ border:1px solid #4682b4; }
             .el-form .el-form-item--mini {
                 margin-bottom: 6px;
             }
@@ -60,7 +60,7 @@
             <div class="head">
                 <el-row>
                     <el-col :span='4'>
-                        <b style="color: steelblue; line-height: 40px;">
+                        <b style="color: #4682b4; line-height: 40px;">
                             Fixed Flow chart
                         </b>
                     </el-col>
@@ -104,7 +104,7 @@
                               <el-button type="danger" icon="el-icon-delete" circle @click="remove"
                                          v-show="!!current_shape" title="Remove"></el-button>
                               <el-button type="success" title="Update" v-show="!!current_shape"
-                                         style="background-color: steelblue; border: none;" @click="update"
+                                         style="background-color: #4682b4; border: none;" @click="update"
                                          icon="el-icon-refresh" circle></el-button>
                           </el-form-item>
                       </el-form>
@@ -113,7 +113,7 @@
 
             </div>
             <div class="paint" id='paint' style="cursor:url('http://s.xnimg.cn/imgpro/arrow/pre.cur');"></div>
-            <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefef; color:steelblue; font-size: 14px;">
+            <i style="position: fixed; bottom: 20px; right: 20px; background-color: #efefef; color:#4682b4; font-size: 14px;">
                 {{!!current_dot[0]?`[${current_dot[0]},${current_dot[1]}]`:''}}
             </i>
         </div>
