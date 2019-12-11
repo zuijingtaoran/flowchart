@@ -20,13 +20,13 @@
 
     <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>-->
 
-    <link href="
-          " rel="stylesheet" defer>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style type="text/css">
         * {
             margin: 0px;
             padding: 0px;
-            box-sizing: border-box;font-family:Arial;
+            box-sizing: border-box;
+            font-family: Arial;
         }
 
         #box {
@@ -108,15 +108,12 @@
         }
 
         .ifr-box {
-             border: 1px solid transparent;
-          
+            border: 1px solid transparent;
             overflow: hidden;
-          
         }
 
         foreignObject:hover {
             border: 1px solid #4682b4;
-            
         }
 
         .ifr-shape {
@@ -139,21 +136,27 @@
             text-align: right;
             border-bottom: none;
         }
-     #paint .ifr-head:hover{ background-color:#e5e5e5;
-                       
+
+        #paint .ifr-head:hover {
+            background-color: #e5e5e5; opacity:0.5;
         }
-            .material-icons {
-                color: #4682b4;
-                cursor: pointer
-            }
-        #menu { width:210px;
-                height:auto;
-                position:absolute;
-                border:1px solid #4682b4;
-                z-index:6; background-color:#fff; left:400px; display:none;
-                padding:15px 4px 15px 0px;
-                font-size:medium
-               
+
+        .material-icons {
+            color: #4682b4;
+            cursor: pointer
+        }
+
+        #menu {
+            width: 210px;
+            height: auto;
+            position: absolute;
+            border: 1px solid #4682b4;
+            z-index: 6;
+            background-color: #fff;
+            left: 400px;
+            display: none;
+            padding: 15px 4px 15px 0px;
+            font-size: medium
         }
     </style>
 
@@ -464,12 +467,14 @@
                         
                         //
                         that.obj[sid] = prop;//obj
+                        let [x1, x2, y1, y2] = [0, 0, 0, 0];
                         if (area === "line") {
                             that.ELE[sid].on('dragstart', function (e) {
 
                                 Z('#menu').hide();
+                                [x1, y1] = [this.x(), this.y()];
                             });
-                            that.ELE[sid].on('dragend', function (e) {
+                            that.ELE[sid].on('dragmove', function (e) {
                                 if (a.includes('curved') || a.includes('elbow')) {
                                     that.ELE[sid + "_l"].attr('x1', that.ELE[sid + "_s"].attr('x') + lineDragDot / 2);
                                     that.ELE[sid + "_l"].attr('y1', that.ELE[sid + "_s"].attr('y') + lineDragDot / 2);
@@ -480,6 +485,13 @@
                                 prop.y = that.ELE[sid + "_l"].attr('y1');
                                 prop.x2 = that.ELE[sid + "_l"].attr('x2');
                                 prop.x2 = that.ELE[sid + "_l"].attr('x2');
+                            });
+                            that.ELE[sid].on('dragend', function (e) {
+                                [x2, y2] = [this.x(), this.y()];
+                                let dd = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+                               //if (dd < 7) { return; }
+
+                               
 
                             });//set prop x,y,x2,y2
 
@@ -711,7 +723,7 @@
                         });
                         Z(`#${sid}_mu`).click(function () {
                             // that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
-                            
+                            event.preventDefault(); event.stopPropagation();
                             Z('#menu').css({
                                 'top': +Z(this).parents('.ifr-box').attr('y') + 23 + 40 + "px"
 
@@ -719,7 +731,10 @@
                             });
                             app.prop = app.obj[Z(this).attr('tid')];
                             app.sid = Z(this).attr('tid');
+                            if (area === 'line') { that.select_shape(a, area, app.prop, app.sid) };
+                           
                             Z('#menu').show();
+                            
                         });
                     }
                 }
