@@ -63,7 +63,7 @@ var rawdata={
 			"Text": "input-1",
 			"URL": "",
 			"Shape": "Hexagon",
-			"ToolTip": "This's a tooltip."
+            "ToolTip": "This's a tooltip.", "ShiningColor": "yellow"
 		}, {
 			"Id": "400",
 			"BackGroundColor": "steelblue",

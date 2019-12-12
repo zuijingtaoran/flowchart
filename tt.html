@@ -8,6 +8,7 @@
     <script type="text/javascript" src="js/com/svg.draggable.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" defer>
     <style type="text/css">
+
         #paint {
             width: 100vw;
             height: 100vh;
@@ -33,37 +34,62 @@
             text-align: right;
             border-bottom: none;
         }
+
         foreignObject {
             border: 1px solid transparent;
         }
-        foreignObject:hover {
-            border: 1px solid steelblue;
-            resize: both;
-        }
+
+            foreignObject:hover {
+                border: 1px solid steelblue;
+                resize: both;color:transparent
+            }
     </style>
+    <script>
+        less = {
+            env: "development",
+            async: false,
+            fileAsync: false,
+            poll: 1000,
+            functions: {},
+            dumpLineNumbers: "comments",
+            relativeUrls: false,
+            rootpath: ":/"
+        };
+    </script>
+    <script>
+        var menuBar = new Object({
+            // 打开的宽度
+            openWidth: "180px",
+            // 关闭的宽度
+            closeWidth: "35px"
+        });
+    </script>
+    <link rel='stylesheet/less' href='./less/shape.less' />
+
 </head>
 <body>
     <div id="paint"></div>
+    <script src="./less/less.js"></script>
     <script>
-        var e, t, s,g
+        var e, t, s, g
             , draw = SVG().addTo('#paint').size(document.getElementById('paint').clientWidth, document.getElementById('paint').clientHeight).viewbox(0, 0, document.getElementById('paint').clientWidth,
                 document.getElementById('paint').clientHeight).attr({
                     id: 'fiexedchart'
-                }),r=5;
+                }), r = 5;
         var prop = {
             "fill": "steelblue",
             "shape": "resc",
             w: 170,
             h: 150,
-            x: 30 ,
-            y: 30 
-        }, sid =  "_" + Math.random().toString(36).substring(2, 6),
+            x: 30,
+            y: 30
+        }, sid = "_" + Math.random().toString(36).substring(2, 6),
             query = "?";
         for (p in prop) {
             query += p + "=" + decodeURIComponent(prop[p]) + "&";
         }
         /* plain draggable */
-     
+
 
         /* grouped draggable */
         g = draw.group().draggable();
@@ -75,32 +101,32 @@
         });
         t = g.foreignObject(100, 100).move(400, 150).attr({ 'class': 'ifr-box' });
         t.node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
-<div class='ifr-head' id='${sid}'>   
+<div class='ifr-head' id='${sid}'>
 <i class="material-icons" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
- <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
+     <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
 </div>
 <iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/, '')}"></iframe>
 </body>`;
-       // g.plain('grouped draggable').move(400, 210);
-      e=  g.rect(20, 20).move(500 - 20, 250 - 20).fill('#f06').draggable();
+        // g.plain('grouped draggable').move(400, 210);
+        e = g.rect(20, 20).move(500 - 20, 250 - 20).fill('#f06').draggable();
 
         /* constraind with object */
         //e = draw.rect(100, 100).center(650, 150).draggable({ minX: 400, minY: 50, maxX: 800, maxY: 400 })
-        e.on('dragstart',function (e) {
+        e.on('dragstart', function (e) {
 
             console.log(this);
             e.stopPropagation(); e.preventDefault(); g.draggable(false);
         });
         e.on('dragmove', function () {
             t.attr('width', e.x() - t.attr('x') + 20);
-            t.attr('height',e.y() - t.attr('y')+20);
+            t.attr('height', e.y() - t.attr('y') + 20);
         });
         e.on('dragend', function () {
             g.draggable(true);
         });
-      
 
-	    /* draggable pattern */
+
+            /* draggable pattern */
     </script>
 </body>
 </html>

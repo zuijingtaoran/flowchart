@@ -1,26 +1,44 @@
 ﻿<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title></title>
-		<script src="./js/vue.js"></script>
-		<style type="text/css">
-            body { width:100vw;
-                   height:100vh;
-                   padding:0px;
-                   margin:0px;
-                   overflow:hidden;
-            } 
-		</style>
-		
-	</head>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="./js/vue.js"></script>
+    <style type="text/css">
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            padding:4px;
+            margin: 0px;
+            overflow: hidden;
+        }
+       
+       
+        
+    </style>
+    <script>
+        less = {
+            env: "development",
+            async: false,
+            fileAsync: false,
+            poll: 1000,
+            functions: {},
+            dumpLineNumbers: "comments",
+            relativeUrls: false,
+            rootpath: ":/"
+        };
+    </script>
+    <link rel='stylesheet/less' href='./less/shape.less' />
+
+</head>
     <body>
 
         <div id="shape">
 
             <svg id="svg" v-if="p.get('shape')=='hexagon'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                  xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" viewBox="0 0 1024 1024">
-                <path :fill="p.get('fill')"
+                <path :fill="p.get('fill')" class="Shining" 
                       d="M934.996 468.191 760.754 166.396c-13.807-23.914-47.394-43.308-75.012-43.308L337.258
 			 123.088c-27.613 0-61.203 19.39-75.012 43.308L88.004 468.191c-13.807 23.914-13.809 62.698
 			  0 86.617l174.242 301.796c13.807 23.913 47.394 43.308 75.012 43.308l348.484 0c27.613 0
@@ -32,18 +50,18 @@
             <svg id="svg" v-else-if="p.get('shape')=='rect'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                  xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" :viewBox="'0 0 '+width+' '+height">
 
-                <rect :width="width" :height="height" :fill="p.get('fill')" />
+                <rect  class="Shining"  :width="width" :height="height" :fill="p.get('fill')" />
             </svg>
             <svg id="svg" v-else-if="p.get('shape')=='circle'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                  xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" :viewBox="'0 0 '+width+' '+height">
 
-                <ellipse :cx="width/2" :cy="height/2" :rx="width/2" :ry="height/2" :fill="p.get('fill')" />
+                <ellipse class="Shining"  :cx="width/2" :cy="height/2" :rx="width/2" :ry="height/2" :fill="p.get('fill')" />
             </svg>
 
             <svg id="svg" v-else-if="p.get('shape')=='parallelogram'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                  xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" :viewBox="'0 0 '+width+' '+height">
 
-                <rect :width="width/1.5" :height="height" :fill="p.get('fill')" transform="
+                <rect  class="Shining" :width="width/1.5" :height="height" :fill="p.get('fill')" transform="
 
                 skewX(15)
                 " />
@@ -52,12 +70,12 @@
                  xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" viewBox="0 0 1457 1024">
 
 
-                <path :fill="p.get('fill')" d="M724.086154 45.686154L22.252308 527.123692l701.833846 481.476923 701.794461-481.476923-701.833846-481.516307z" p-id="2938"></path>
+                <path  class="Shining" :fill="p.get('fill')" d="M724.086154 45.686154L22.252308 527.123692l701.833846 481.476923 701.794461-481.476923-701.833846-481.516307z" p-id="2938"></path>
             </svg>
 
             <svg id="svg" v-else-if="p.get('shape')=='pentagon'" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                  xmlns:svgjs="http://svgjs.com/svgjs" :width="width" :height="height" viewBox="0 0 1024 1024">
-                <path d="M830.863 993.516l-632.914 0.967L1.44 393.093 512.927 20.444l512.609 371.082z" p-id="3563" :fill="p.get('fill')"></path>
+                <path  class="Shining" d="M830.863 993.516l-632.914 0.967L1.44 393.093 512.927 20.444l512.609 371.082z" p-id="3563" :fill="p.get('fill')"></path>
             </svg>
         </div>
         <script type="text/javascript">
@@ -67,12 +85,16 @@
                     width: 100,
                     height:100,
                     p: {
-                        get() { }}
+                        get() { }
+                    },
+                    zoom:1
                 },
                 mounted() {
-                    this.width = document.body.clientWidth;
-                    this.height = document.body.clientHeight;
+                    this.width = document.body.clientWidth-16;
+                    this.height = document.body.clientHeight-16;
                     this.p = new URLSearchParams(location.search.substr(1));
+                    this.zoom = 1024 / (this.width > this.height ? this.height : this.width);
+                    if ('rect|circle|parallelogram'.includes(this.p.get('shape'))) { this.zoom=1 }
                 },
                 methods: {
                     getQueryString(name) {
@@ -97,5 +119,6 @@
              //   console.log("onresize");
             }
         </script>
+        <script src="less/less.js"></script>
     </body>
 </html>

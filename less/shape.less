@@ -1,0 +1,46 @@
+﻿
+@stroke: ~`shape.p.get('stroke')`;
+@stroke-dasharray: ~`shape.p.get('stroke-dasharray')`;
+@animation-duration: ~`shape.p.get('animation-duration')`;
+@stroke-width: ~`+shape.p.get('stroke-width')*shape.zoom`;
+
+.Shining {
+    stroke-dasharray: @stroke-dasharray;
+    animation-duration: @animation-duration;
+    animation-iteration-count: infinite;
+    animation-name: sc;
+    stroke: @stroke;
+    stroke-width: @stroke-width;
+    /*border-color:@stroke;
+    border-width:@stroke-width;*/
+   
+   
+    /*animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-name: sc;
+    stroke:red;
+    stroke-width:4;*/
+}
+
+
+
+@keyframes sc {
+    0% {
+        stroke-opacity: 1
+    }
+
+   25% {
+        
+        stroke-opacity:0.5
+    }
+   50% {
+        stroke-opacity: 0.05
+    }
+    75% {
+        stroke-opacity: 0.5
+    }
+
+    100% {
+        stroke-opacity: 1
+    }
+}

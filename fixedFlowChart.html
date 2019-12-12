@@ -113,7 +113,7 @@
         }
 
         foreignObject:hover {
-            border: 1px solid #4682b4;
+           
         }
 
         .ifr-shape {
@@ -126,7 +126,7 @@
 
         .ifr-head {
             width: 100%;
-            height: 23px;
+            height: 100%;
             overflow: hidden;
             position: absolute;
             top: 0px;
@@ -136,14 +136,15 @@
             text-align: right;
             border-bottom: none;
         }
-
+/* [shape='area'] .ifr-head {height: 61.8%;} */
         #paint .ifr-head:hover {
-            background-color: #e5e5e5; opacity:0.5;
+            background-color: rgb(111,111,111,0.16); 
         }
 
         .material-icons {
             color: #4682b4;
-            cursor: pointer
+            cursor: pointer;
+            background-color:#fff;
         }
 
         #menu {
@@ -158,6 +159,32 @@
             padding: 15px 4px 15px 0px;
             font-size: medium
         }
+		.ifr-box .toolicon{visibility: hidden;}
+		.ifr-box + image{visibility: hidden;}
+		[ifrfocus]{ border: 1px solid #4682b4;}
+		[ifrfocus] .toolicon{visibility:visible!important;}
+		[ifrfocus] + image{visibility:visible;}
+		.ShiningColor-red{-webkit-animation-name: d_red;}
+		@keyframes d_red {
+		            0% {border-color: red; border-width: 1;
+					stroke: red;stroke-width:1;
+					
+					}
+            50% {
+                border-color: pink;
+                border-width: 4;
+                stroke: pink;
+                stroke-width: 4;
+            }
+            100% {
+                border-color: red;
+                border-width: 1;
+                stroke: red;
+                stroke-width: 1;
+            }
+		        }
+      .layoutbox  .el-input__inner {
+       width:100px; }
     </style>
 
 </head>
@@ -165,21 +192,35 @@
 		<div id="box">
 		    <div class="head">
 		        <el-row>
-		            <el-col :span='4'>
+		            <el-col :span='23'>
 		                <b style="color: #4682b4; line-height: 40px;">
 		                    Fixed Flow chart
 		                </b>
 		            </el-col>
-		            <el-col :span='16'>
-		                <div>
-		
-		
-		
-		
-		                </div>
-		
-		            </el-col>
-		            <el-col :span='3'></el-col>
+		         
+                    <el-col :span='1'>
+                        <el-dropdown>
+                            <span class="el-dropdown-link">
+                                <i class="el-icon-more el-icon--right" id='morebut'></i>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                
+
+                                <el-dropdown-item>
+                                    <span @click="saveLayout(!0)">
+                                        <i class='el-icon-location-outline' id='rem_layout' title="Remember my layout lst"></i>Save layout
+                                    </span>
+                                </el-dropdown-item>
+                                <el-dropdown-item>
+                                    <span @click="rmv" v-if="LayoutName.length>0" >
+                                        <i class='el-icon-delete lst err-red' id='rmv_layout' title="Remove current layout"></i>Clear layout
+                                    </span>
+                                </el-dropdown-item>
+
+
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-col>
 		        </el-row>
 		    </div>
 		    <div class="left">
@@ -191,18 +232,17 @@
                             <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
                         </div>
                     </el-collapse-item>
-                    <el-collapse-item title="Layout" name="2">
+                    <el-collapse-item title="Layout" name="2"  class="layoutbox">
                         <el-row>
-                            <el-col span="20">
-                                Tool icon<el-switch v-model="toolicon" size="mini"
-                                                    active-color="steelblue"
-                                                    inactive-color="#eee">
-                                </el-switch>
-                            </el-col>
-                            <el-col span="4">
+                            <el-col :span="5"> Name</el-col>
+                                <el-col :span="15">
+                                   <el-input v-model="LayoutName" size="mini">
+                                    </el-input>
+                                </el-col>
+                                <el-col :span="4">
 
-                                <i class="material-icons" @click="saveLayout" title="Save layout">save</i>
-                            </el-col>
+                                    <!--<i class="material-icons" @click="saveLayout(!0)" title="Save layout">save</i>-->
+                                </el-col>
                         </el-row>
                        
 
@@ -255,6 +295,7 @@
                 },
                 data() {
                     return {
+                        LayoutName: localStorage.getItem('LayoutName')||"",
                         toolicon: true,
                         ELE: {},
                         obj: {},
@@ -285,8 +326,18 @@
                             direct: { label: "Direct", ele: "select", type: "radio", value: "", disabled: false, option: ["up", "down"] },
                             'size': { label: "Size", ele: "select", type: "radio", value: "", disabled: false, option: ["small", "medium", 'large', 'larger'] },
                           
-                            'text': { label: "Description", ele: "input", value: "", disabled: false }
+                            'text': { label: "Description", ele: "input", value: "", disabled: false },
+                            'stroke': { label: "ShiningColor", ele: "select", type: "radio", value: "", disabled: false, option: ["transparent", "red", "green", 'gold', 'blue'] },
+                            'stroke-width':{ label: "ShiningWidth", ele: "input", type: "number", value: "4", disabled: false },
+                            'stroke-dasharray': { label: "Dasharray", ele: "input", type: "number", value: "0", disabled: false },
+                            'animation-duration': { label: "ShiningDuration", ele: "select", type: "radio", value: "", disabled: false, option: ["0s", "1s", "2s", '3s', '4s', '5s'] }
 
+
+                          
+                    //        @stroke: `shape.p.get('stroke')`;
+                    //@stroke-dasharray: `shape.p.get('stroke-dasharray')`;
+                    //@animation-duration: `shape.p.get('animation-duration')` s;
+                    //@stroke-width: `shape.p.get('stroke-width')`;
                     
 
                 },
@@ -369,11 +420,48 @@
                     svg = SVG().addTo('#paint').size(document.getElementById('paint').clientWidth, document.getElementById('paint').clientHeight).viewbox(0, 0, document.getElementById('paint').clientWidth,
                         document.getElementById('paint').clientHeight).attr({
                         id: 'fiexedchart'
-                    });
+                        });
+                    if (!!localStorage.getItem('LayoutData')) {
+                        let his = {},cols=[];
+                        his = JSON.parse(localStorage.getItem('LayoutData'));
+                        cols = Object.keys(his);
+                        for (let i = 0; i < cols.length; i++) {
+                            setTimeout(function (a, b, c) {
+                                a.select_shape(c.shape, c.category, c, b);
+                            }, (i + 1) * 100, that, cols[i], his[cols[i]]);
+                        }
+                        that.LayoutName = localStorage.getItem('LayoutName');
+                    }
                 },
                 methods: {
-                    saveLayout() {
-                        alert(JSON.stringify(this.obj))
+                    rmv() {
+                        this.$confirm('Remove current layout', 'Notice', {
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            type: 'warning'
+                        }).then(() => {
+                            localStorage.setItem('LayoutName', '');
+                            localStorage.setItem('LayoutData', '');
+
+
+                            this.$message({
+                                type: 'info',
+                                message: 'Removed.'
+                            });
+                         
+                        }).catch(() => {
+                            
+                        });
+
+                    },
+                    saveLayout(mes) {
+                       
+                        localStorage.setItem("LayoutName", this.LayoutName);
+                        localStorage.setItem('LayoutData', JSON.stringify(this.obj));
+                        !!mes&&this.$message({
+                            message: this.LayoutName+ ' save successful.',
+                            type: 'success'
+                        });
                     },
                     polyline(x1, y1, x2, y2, direct) {
                         if (direct == 'up') {
@@ -427,7 +515,7 @@
 
                                 };
 
-                            } else if (area == 'area') {
+                            } else if (area == 'area'||area == 'reference') {
                                 prop = {
                                     "name": sid,
                                     "shape": a,
@@ -438,7 +526,18 @@
                                     x: 30 + that.offset * 15,
                                     y: 30 + that.offset * 15,
                                     "fill": "#4682b4",
-                                    url: "blank:"
+                                    url: "blank:",
+                                    stroke: 'transparent',
+                                    'stroke-dasharray': 0,
+                                    'animation-duration':"2s",
+                                    'stroke-width':4
+
+
+                                      //        @stroke: `shape.p.get('stroke')`;
+                    //@stroke-dasharray: `shape.p.get('stroke-dasharray')`;
+                    //@animation-duration: `shape.p.get('animation-duration')` s;
+                    //@stroke-width: `shape.p.get('stroke-width')`;
+
                                 };
                             } else if (area == 'text') {
                                 prop = {
@@ -456,7 +555,9 @@
                         }
                       
                         for (p in prop) {
-                            query += p + "=" + encodeURIComponent( prop[p]) + "&";
+                            if (p !== 'url') {
+                                query += p + "=" + encodeURIComponent(prop[p]) + "&";
+                            }
                         }
                       
 
@@ -469,6 +570,7 @@
                         that.obj[sid] = prop;//obj
                         let [x1, x2, y1, y2] = [0, 0, 0, 0];
                         if (area === "line") {
+								Z('[ifrfocus]').removeAttr('ifrfocus');
                             that.ELE[sid].on('dragstart', function (e) {
 
                                 Z('#menu').hide();
@@ -484,22 +586,24 @@
                                 prop.x = that.ELE[sid + "_l"].attr('x1');
                                 prop.y = that.ELE[sid + "_l"].attr('y1');
                                 prop.x2 = that.ELE[sid + "_l"].attr('x2');
-                                prop.x2 = that.ELE[sid + "_l"].attr('x2');
+                                prop.y2 = that.ELE[sid + "_l"].attr('y2');
                             });
                             that.ELE[sid].on('dragend', function (e) {
                                 [x2, y2] = [this.x(), this.y()];
                                 let dd = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-                               //if (dd < 7) { return; }
-
+                               if (dd < 7) { 
+								   Z('[ifrfocus]').removeAttr('ifrfocus');
+								    that.ELE[sid + "_b"].attr('ifrfocus',true)
+ if (a.includes('curved')) {
+                                    that.ELE[sid + "_l"].attr('d', that.Berzier(prop.x, prop.y, prop.x2, prop.y2, prop.direct));
+                                } else if (a.includes('elbow')) {
+                                    that.ELE[sid + "_l"].attr('d', that.polyline(prop.x, prop.y , prop.x2, prop.y2, prop.direct));
+                                }}
                                
 
                             });//set prop x,y,x2,y2
 
-                            that.ELE[sid + '_b'] = that.ELE[sid].foreignObject(60, 25).move(prop.x - 30, prop.y - 25).attr({ 'class': 'ifr-box' });
-                            that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
-<div class='ifr-head' id='${sid}'>   
-<i class="material-icons toolicon" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
- <i class="material-icons toolicon" title="Close" id="${sid}_cls" tid=${sid}>close</i>`;
+                           
                             switch (a) {
                                 case "line-arrow":
                                     that.ELE[sid + '_l'] = that.ELE[sid].line(prop.x, prop.y, prop.x2, prop.y2)
@@ -597,8 +701,13 @@
                                     break;
 
                             }
-                            that.ELE[sid + '_s'] = that.ELE[sid].rect(lineDragDot, lineDragDot).fill('#ccc').attr('class','toolicon').opacity(0.4).move(prop.x - lineDragDot / 2, prop.y - lineDragDot / 2).draggable();
-                            that.ELE[sid + '_e'] = that.ELE[sid].rect(lineDragDot, lineDragDot).fill('#ccc').attr('class', 'toolicon').opacity(0.4).move(prop.x2 - lineDragDot / 2, prop.y2 - lineDragDot / 2).draggable();
+							that.ELE[sid + '_b'] = that.ELE[sid].foreignObject(60, 25).move(prop.x - 30, prop.y - 25).attr({ 'class': 'ifr-box','ifrfocus':'true' });
+							                            that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
+							<div class='ifr-head' id='${sid}'>   
+							<i class="material-icons toolicon" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
+							 <i class="material-icons toolicon" title="Close" id="${sid}_cls" tid=${sid}>close</i>`;
+                            that.ELE[sid + '_s'] = that.ELE[sid].rect(lineDragDot, lineDragDot).fill('#ccc').attr('class','toolicon').opacity(0.21).move(prop.x - lineDragDot / 2, prop.y - lineDragDot / 2).draggable();
+                            that.ELE[sid + '_e'] = that.ELE[sid].rect(lineDragDot, lineDragDot).fill('#ccc').attr('class', 'toolicon').opacity(0.21).move(prop.x2 - lineDragDot / 2, prop.y2 - lineDragDot / 2).draggable();
                             that.ELE[sid + "_s"].on('dragstart', function (e) {
 
                                 console.log(this);
@@ -646,17 +755,25 @@
 
 
                         } else if (area === "area" || area == "reference") {
+							 [x1, x2, y1, y2] = [0, 0, 0, 0];
                             that.ELE[sid].on('dragstart', function (e) {
-
+   [x1, y1] = [this.x(), this.y()];
                                 Z('#menu').hide();
                             });
                             that.ELE[sid].on('dragend', function (e) {
                                 prop.x = that.ELE[sid + "_b"].attr('x');
                                 prop.y = that.ELE[sid + "_b"].attr('y');
-
+//add remove fouce
+   [x2, y2] = [this.x(), this.y()];
+                                 dd = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+								if(dd<7){console.log(dd);
+								Z('[ifrfocus]').removeAttr('ifrfocus');
+								 that.ELE[sid + "_b"].attr('ifrfocus',true)
+								}
 
                             });//set prop x,y,x2,y2
-                            that.ELE[sid + "_b"] = that.ELE[sid].foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': 'ifr-box' });
+							Z('[ifrfocus]').removeAttr('ifrfocus');
+                            that.ELE[sid + "_b"] = that.ELE[sid].foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': `ifr-box ShiningColor-${prop.ShiningColor}`,'ifrfocus':'true','shape':'area' });
 
                             if (area === "reference") {
                                 that.config.url.disabled = false;
@@ -692,19 +809,27 @@
                             });
 
                         } else if (area == 'text') {
+							 [x1, x2, y1, y2] = [0, 0, 0, 0];
                             that.ELE[sid].on('dragstart', function (e) {
-
+ [x1, y1] = [this.x(), this.y()];
                                 Z('#menu').hide();
                             });
                             that.ELE[sid].on('dragend', function (e) {
                                 prop.x = that.ELE[sid + "_t"].attr('x');
                                 prop.y = that.ELE[sid + "_t"].attr('y');
 
+//add remove fouce
+   [x2, y2] = [this.x(), this.y()];
+                                 dd = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+								if(dd<7){console.log(dd);
+								Z('[ifrfocus]').removeAttr('ifrfocus');
+								 that.ELE[sid + "_b"].attr('ifrfocus',true)
+								}
 
                             });
 
 
-                            that.ELE[sid + '_b'] = that.ELE[sid].foreignObject(60, 25).move(prop.x - 30, prop.y - 25).attr({ 'class': 'ifr-box' });
+                            that.ELE[sid + '_b'] = that.ELE[sid].foreignObject(60, 25).move(prop.x - 30, prop.y - 25).attr({ 'class': 'ifr-box','ifrfocus':'true' });
                             that.ELE[sid + "_b"].node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
 <div class='ifr-head' id='${sid}'>   
 <i class="material-icons toolicon" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
