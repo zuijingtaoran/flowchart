@@ -181,6 +181,7 @@
                 border-width: 1;
                 stroke: red;
                 stroke-width: 1;
+              
             }
 		        }
       .layoutbox  .el-input__inner {
@@ -189,7 +190,7 @@
 
 </head>
 	<body>
-		<div id="box">
+		<div id="box"   onkeydown="a(event)">
 		    <div class="head">
 		        <el-row>
 		            <el-col :span='23'>
@@ -303,11 +304,11 @@
                         prop: {},
                         sid:'',
                         config: {
-                            name: { label: "Name", ele: "input", type: "areatext", value: "", disabled: false },
+                            name: { label: "Name", ele: "input", type: "textarea", value: "", disabled: false },
                             shape: { label: "Shape", ele: "input", type: "text", value: "", disabled: true },
                             category: { label: "Category", ele: "input", type: "text", value: "", disabled: true },
-                            w: { label: "Width", ele: "input", type: "number", value: 80, disabled: false },
-                            h: { label: "Height", ele: "input", type: "number", value: 56, disabled: false  },
+                            w: { label: "Width", ele: "input", type: "number", value: 80, disabled: false , min: 1},
+                            h: { label: "Height", ele: "input", type: "number", value: 56, disabled: false , min: 1 },
                             x: { label: "X1", ele: "input", type: "number", value: 0, disabled: false  },
                             y: { label: "Y1", ele: "input", type: "number", value: 0, disabled: false },
                             x2: { label: "X2", ele: "input", type: "number", value: 0, disabled: false },
@@ -317,21 +318,21 @@
                                  label: "BorderColor", ele: "color", value: "#4682b4", disabled: false 
                             },
                             BorderWidth: {
-                                label: "BorderWidth", ele: "input", type: "number", value: "4", disabled: false 
+                                label: "BorderWidth", ele: "input", type: "number", value: "4", disabled: false, max: 20, min: 1
                             },
                             BorderStyle: {
                                 label: "BorderStyle",ele: "select", type: "radio", option: ["solid", "dash"], value: "dash"
                             },
-                            url: { label: "Reference", ele: "input", type: "text", value: "", disabled: true },
+                            url: { label: "Reference", ele: "input", type: "textarea", value: "", disabled: true },
                             direct: { label: "Direct", ele: "select", type: "radio", value: "", disabled: false, option: ["up", "down"] },
-                            'size': { label: "Size", ele: "select", type: "radio", value: "", disabled: false, option: ["small", "medium", 'large', 'larger'] },
+                            'size': { label: "Size", ele: "select", type: "radio", value: "", disabled: false, option: ["small", "medium", 'large', 'larger','x-larger','xx-larger'] },
                           
                             'text': { label: "Description", ele: "input", value: "", disabled: false },
                             'stroke': { label: "ShiningColor", ele: "select", type: "radio", value: "", disabled: false, option: ["transparent", "red", "green", 'gold', 'blue'] },
-                            'stroke-width':{ label: "ShiningWidth", ele: "input", type: "number", value: "4", disabled: false },
-                            'stroke-dasharray': { label: "Dasharray", ele: "input", type: "number", value: "0", disabled: false },
-                            'animation-duration': { label: "ShiningDuration", ele: "select", type: "radio", value: "", disabled: false, option: ["0s", "1s", "2s", '3s', '4s', '5s'] }
-
+                            'stroke-width': { label: "ShiningWidth", ele: "input", type: "number", value: 4, disabled: false, max:20, min: 1 },
+                            'stroke-dasharray': { label: "Dasharray", ele: "input", type: "number", value: 0, disabled: false, max: 10, min:0 },
+                            'animation-duration': { label: "ShiningDuration", ele: "select", type: "radio", value: "", disabled: false, option: ["0s", "1s", "2s", '3s', '4s', '5s'] },
+                            'rotate': { label: "TextRotate", ele: "input", type: "number", value: 0, disabled: false,max:360,min:-360 }
 
                           
                     //        @stroke: `shape.p.get('stroke')`;
@@ -366,6 +367,9 @@
                                 category: 'area',
                                 icon: './shape/'
                             }, "hexagon": {
+                                category: 'area',
+                                icon: './shape/'
+                            }, "chevron": {
                                 category: 'area',
                                 icon: './shape/'
                             },
@@ -548,7 +552,8 @@
                                     y: 30 + that.offset * 15,
                                     size: "medium",
                                     fill: "#999999",
-                                    text:"text..."
+                                    text: "text...",
+                                    rotate:0
                                    
                                 };
                             }
@@ -815,8 +820,8 @@
                                 Z('#menu').hide();
                             });
                             that.ELE[sid].on('dragend', function (e) {
-                                prop.x = that.ELE[sid + "_t"].attr('x');
-                                prop.y = that.ELE[sid + "_t"].attr('y');
+                                prop.x = +that.ELE[sid + "_b"].attr('x')+30;
+                                prop.y = +that.ELE[sid + "_b"].attr('y')+25;
 
 //add remove fouce
    [x2, y2] = [this.x(), this.y()];
@@ -836,8 +841,9 @@
  <i class="material-icons toolicon" title="Close" id="${sid}_cls" tid=${sid}>close</i>`;
                             that.ELE[sid + '_t'] = that.ELE[sid].text(prop.text).move(prop.x, prop.y).font({
                                 fill: prop.fill,
-                                size: prop.size
-                            })
+                                size: prop.size,
+                                anchor: 'middle'
+                            }).rotate(prop.rotate);
 
                         }
 
@@ -866,7 +872,20 @@
             };
 					var Ctor = Vue.extend(Main);
             var app = new Ctor().$mount('#box');
-           
+            document.onkeydown = function (event) {
+                if (event.ctrlKey) {
+                    
+                    k = event.keyCode;
+                  
+                    if (k == 86) {
+                        alert('ctrl v')
+                    }
+                    if (k == 67) {
+                        alert('ctrl c')
+                    }
+                    console.log(k);
+                }
+            }
 
 		</script>
 	</body>
