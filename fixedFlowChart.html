@@ -190,7 +190,7 @@
 
 </head>
 	<body>
-		<div id="box"   onkeydown="a(event)">
+		<div id="box"   >
 		    <div class="head">
 		        <el-row>
 		            <el-col :span='23'>
@@ -332,7 +332,7 @@
                             'stroke-width': { label: "ShiningWidth", ele: "input", type: "number", value: 4, disabled: false, max:20, min: 1 },
                             'stroke-dasharray': { label: "Dasharray", ele: "input", type: "number", value: 0, disabled: false, max: 10, min:0 },
                             'animation-duration': { label: "ShiningDuration", ele: "select", type: "radio", value: "", disabled: false, option: ["0s", "1s", "2s", '3s', '4s', '5s'] },
-                            'rotate': { label: "TextRotate", ele: "input", type: "number", value: 0, disabled: false,max:360,min:-360 }
+                            'rotate': { label: "Rotate", ele: "input", type: "number", value: 0, disabled: false,max:360,min:-360 }
 
                           
                     //        @stroke: `shape.p.get('stroke')`;
@@ -425,6 +425,38 @@
                         document.getElementById('paint').clientHeight).attr({
                         id: 'fiexedchart'
                         });
+                    setTimeout(function () {
+                        document.onkeydown = function (event) {
+                            let target = event.target || event.srcElement;
+                            console.log(target.nodeName);
+                            if (target.nodeName=="BODY"&&event.ctrlKey) {
+
+                                let k = event.keyCode;
+
+                                if (k == 86) {
+                                 //   alert('ctrl v');
+                                    let fs = Z('[ifrfocus="true"]').find('[id]').attr('id');
+                                    if (typeof fs == 'string') {
+                                        let sid = fs.split('_')[0] + "_" + Math.random().toString(36).substr(2, 6),
+                                            cate = Z('[ifrfocus="true"]').attr('shape');
+                                        let p = JSON.parse(JSON.stringify(that.obj[fs]));
+                                        p.x = p.x + p.w;
+                                        p.name = sid;
+                                        
+                                        that.obj[sid] = p;
+                                        that.select_shape(fs.split('_')[0], cate, p, sid);
+
+                                    }
+
+                                }
+                                //if (k == 67) {
+                                //    alert('ctrl c');
+                                //}
+                                console.log(k);
+                            }
+                        };
+                    }, 0)
+                
                     if (!!localStorage.getItem('LayoutData')) {
                         let his = {},cols=[];
                         his = JSON.parse(localStorage.getItem('LayoutData'));
@@ -534,7 +566,7 @@
                                     stroke: 'transparent',
                                     'stroke-dasharray': 0,
                                     'animation-duration':"2s",
-                                    'stroke-width':4
+                                    'stroke-width': 4, rotate: 0
 
 
                                       //        @stroke: `shape.p.get('stroke')`;
@@ -760,7 +792,8 @@
 
 
                         } else if (area === "area" || area == "reference") {
-							 [x1, x2, y1, y2] = [0, 0, 0, 0];
+                            [x1, x2, y1, y2] = [0, 0, 0, 0];
+
                             that.ELE[sid].on('dragstart', function (e) {
    [x1, y1] = [this.x(), this.y()];
                                 Z('#menu').hide();
@@ -777,8 +810,8 @@
 								}
 
                             });//set prop x,y,x2,y2
-							Z('[ifrfocus]').removeAttr('ifrfocus');
-                            that.ELE[sid + "_b"] = that.ELE[sid].foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': `ifr-box ShiningColor-${prop.ShiningColor}`,'ifrfocus':'true','shape':'area' });
+                            Z('[ifrfocus]').removeAttr('ifrfocus');
+                            that.ELE[sid + "_b"] = that.ELE[sid].foreignObject(prop.w, prop.h).move(prop.x, prop.y).attr({ 'class': `ifr-box ShiningColor-${prop.ShiningColor}`, 'ifrfocus': 'true', 'shape': 'area' });
 
                             if (area === "reference") {
                                 that.config.url.disabled = false;
@@ -812,7 +845,7 @@
                             that.ELE[sid + "_d"].on('dragend', function () {
                                 that.ELE[sid].draggable(true);
                             });
-
+                            that.ELE[sid].rotate(prop.rotate);
                         } else if (area == 'text') {
 							 [x1, x2, y1, y2] = [0, 0, 0, 0];
                             that.ELE[sid].on('dragstart', function (e) {
@@ -850,6 +883,7 @@
                         Z(`#${sid}_cls`).click(function () {
                             that.ELE[Z(this).attr('tid')].remove(); event.stopPropagation();
                             delete app.obj[Z(this).attr('tid')];
+                            that.saveLayout();
 
                         });
                         Z(`#${sid}_mu`).click(function () {
@@ -867,25 +901,13 @@
                             Z('#menu').show();
                             
                         });
+                        that.saveLayout();
                     }
                 }
             };
 					var Ctor = Vue.extend(Main);
             var app = new Ctor().$mount('#box');
-            document.onkeydown = function (event) {
-                if (event.ctrlKey) {
-                    
-                    k = event.keyCode;
-                  
-                    if (k == 86) {
-                        alert('ctrl v')
-                    }
-                    if (k == 67) {
-                        alert('ctrl c')
-                    }
-                    console.log(k);
-                }
-            }
+           
 
 		</script>
 	</body>
