@@ -21,6 +21,7 @@
     <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>-->
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="./css/flawchart.css" rel="stylesheet">
     <style type="text/css">
         * {
             margin: 0px;
@@ -113,7 +114,6 @@
         }
 
         foreignObject:hover {
-           
         }
 
         .ifr-shape {
@@ -136,15 +136,15 @@
             text-align: right;
             border-bottom: none;
         }
-/* [shape='area'] .ifr-head {height: 61.8%;} */
+        /* [shape='area'] .ifr-head {height: 61.8%;} */
         #paint .ifr-head:hover {
-            background-color: rgb(111,111,111,0.16); 
+            background-color: rgb(111,111,111,0.16);
         }
 
         .material-icons {
             color: #4682b4;
             cursor: pointer;
-            background-color:#fff;
+            background-color: #fff;
         }
 
         #menu {
@@ -159,33 +159,59 @@
             padding: 15px 4px 15px 0px;
             font-size: medium
         }
-		.ifr-box .toolicon{visibility: hidden;}
-		.ifr-box + image{visibility: hidden;}
-		[ifrfocus]{ border: 1px solid #4682b4;}
-		[ifrfocus] .toolicon{visibility:visible!important;}
-		[ifrfocus] + image{visibility:visible;}
-		.ShiningColor-red{-webkit-animation-name: d_red;}
-		@keyframes d_red {
-		            0% {border-color: red; border-width: 1;
-					stroke: red;stroke-width:1;
-					
-					}
+
+        .ifr-box .toolicon {
+            visibility: hidden;
+        }
+
+        .ifr-box + image {
+            visibility: hidden;
+        }
+
+        [ifrfocus] {
+            border: 1px solid #4682b4;
+        }
+
+            [ifrfocus] .toolicon {
+                visibility: visible !important;
+            }
+
+            [ifrfocus] + image {
+                visibility: visible;
+            }
+
+        .ShiningColor-red {
+            -webkit-animation-name: d_red;
+        }
+
+        @keyframes d_red {
+            0% {
+                border-color: red;
+                border-width: 1;
+                stroke: red;
+                stroke-width: 1;
+            }
+
             50% {
                 border-color: pink;
                 border-width: 4;
                 stroke: pink;
                 stroke-width: 4;
             }
+
             100% {
                 border-color: red;
                 border-width: 1;
                 stroke: red;
                 stroke-width: 1;
-              
             }
-		        }
-      .layoutbox  .el-input__inner {
-       width:100px; }
+        }
+
+        .layoutbox .el-input__inner {
+            width: 100px;
+        }
+        .editpage { display:none;
+        }
     </style>
 
 </head>
@@ -226,28 +252,43 @@
 		    </div>
 		    <div class="left">
                 <el-collapse v-model="activeNames">
-                    <el-collapse-item title="Shape box" name="1">
+                    <el-collapse-item title="Shape box" name="1" class="editpage">
                         <div class="shapebox" v-for="a in Object.keys(shape)" :title="a"
                              :class='current_shape===a?"shape_slt":""'
                              @click="select_shape(a,shape[a]['category'])">
                             <image class="shape" :src="`${shape[a]['icon']}${a}.svg`"></image>
                         </div>
                     </el-collapse-item>
-                    <el-collapse-item title="Layout" name="2"  class="layoutbox">
+                    <el-collapse-item title="Layout" name="2" class="layoutbox editpage">
                         <el-row>
                             <el-col :span="5"> Name</el-col>
-                                <el-col :span="15">
-                                   <el-input v-model="LayoutName" size="mini">
-                                    </el-input>
-                                </el-col>
-                                <el-col :span="4">
+                            <el-col :span="15">
+                                <el-input v-model="LayoutName" size="mini">
+                                </el-input>
+                            </el-col>
+                            <el-col :span="4">
 
-                                    <!--<i class="material-icons" @click="saveLayout(!0)" title="Save layout">save</i>-->
-                                </el-col>
+                                <!--<i class="material-icons" @click="saveLayout(!0)" title="Save layout">save</i>-->
+                            </el-col>
                         </el-row>
-                       
 
 
+
+                    </el-collapse-item>
+                    <el-collapse-item title="Color code definition" name="3" class="layoutbox showpage">
+                        <div class="definition">
+                            <div class="card" v-for="df in Object.keys(definition)"
+                                 @click="dfclick(df)"
+                                 :class="dflist.indexOf(df)>-1&&'noselected'"
+                                 :title='df'>
+                                <div class="card-head">
+
+                                    <image class="shape" :src="`${shape[df]['icon']}${df}.svg`"></image>
+                                </div>
+                                <div class='card-body'>{{df}}</div>
+                                <i class="number">{{definition[df]['number']}}</i>
+                            </div>
+                        </div>
                     </el-collapse-item>
 
                 </el-collapse>
@@ -294,8 +335,11 @@
                         v ? Z('.toolicon').show() : Z('.toolicon').hide();
                     }
                 },
+              
                 data() {
                     return {
+                        definition: {},
+                        dflist:[],
                         LayoutName: localStorage.getItem('LayoutName')||"",
                         toolicon: true,
                         ELE: {},
@@ -462,14 +506,29 @@
                         his = JSON.parse(localStorage.getItem('LayoutData'));
                         cols = Object.keys(his);
                         for (let i = 0; i < cols.length; i++) {
+                            //definition
+                            let prop = his[cols[i]], df = this.definition;
+                            if (prop.category == "area") {
+                                if (!!df[prop.shape]) {
+                                    df[prop.shape].number +=1;
+                                } else {
+                                    df[prop.shape] = { number: 1 };
+                                }
+
+                            }
+
+                            //render paint
                             setTimeout(function (a, b, c) {
                                 a.select_shape(c.shape, c.category, c, b);
                             }, (i + 1) * 100, that, cols[i], his[cols[i]]);
                         }
                         that.LayoutName = localStorage.getItem('LayoutName');
+                       
+                    
                     }
                 },
                 methods: {
+                    dfclick(df) { },
                     rmv() {
                         this.$confirm('Remove current layout', 'Notice', {
                             confirmButtonText: 'Yes',
