@@ -10,15 +10,15 @@
     <script type="text/javascript" src="js/com/svg.draggable.js"></script>
     <script src="./js/z.js">
     </script>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!--<script src="https://unpkg.com/vue/dist/vue.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 
-    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <!--<script src="http://cvpmdsip03/tools/js/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+    <script src="http://cvpmdsip03/tools/js/vue.js"></script>
     <script src="http://cvpmdsip03/tools/element-ui/lib/index.js"></script>
     <link rel="stylesheet" href="http://cvpmdsip03/tools/element-ui/lib/theme-chalk/index.css">
 
-    <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>-->
+    <script src="http://cvpmdsip03/tools/element-ui/lib/umd/locale/en.js"></script>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="./css/flawchart.css" rel="stylesheet">
@@ -210,8 +210,7 @@
         .layoutbox .el-input__inner {
             width: 100px;
         }
-        .editpage { display:none;
-        }
+       
     </style>
 
 </head>
@@ -275,7 +274,7 @@
 
 
                     </el-collapse-item>
-                    <el-collapse-item title="Color code definition" name="3" class="layoutbox showpage">
+                    <el-collapse-item title="Color code definition" name="3" class="layoutbox viewpage">
                         <div class="definition">
                             <div class="card" v-for="df in Object.keys(definition)"
                                  @click="dfclick(df)"
@@ -314,7 +313,11 @@
                                            :value="item">
                                 </el-option>
                             </el-select>
-                            <el-color-picker v-else-if="config[c].ele=='color'" v-model="prop[c]" :disabled="config[c].disabled"></el-color-picker>
+                            <el-color-picker v-else-if="config[c].ele=='color'" 
+                                          
+  show-alpha
+  :predefine="predefineColors"
+                                             v-model="prop[c]" :disabled="config[c].disabled"></el-color-picker>
                             <el-input v-else="config[c].ele=='input'" :type="config[c].type" :rows="2" v-model="prop[c]" :disabled="config[c].disabled"></el-input>
                         </el-form-item>
                         <el-form-item style="text-align:right">
@@ -326,19 +329,24 @@
 
             </div>
 		</div>
-		<script>
+		<script> ELEMENT.locale(ELEMENT.lang.en)
             let svg = null;
             let lineDragDot = 30;
             let Main = {
                 watch: {
                     toolicon(v) {
                         v ? Z('.toolicon').show() : Z('.toolicon').hide();
+                    },
+                    dflist(val) {
+                        this.render(val);
+
                     }
                 },
               
                 data() {
                     return {
-                        definition: {},
+                        predefineColors: '#000000,#7f7f7f,#880015,#ed1c24,#ff7f27,#fff200,#22b14c,#00a2e8,#3f48cc,#a349a4,#ffffff,#c3c3c3,#b97a57,#ffaec9,#ffc90e,#efe4b0,#b5e61d,#99d9ea,#7092be'.split(',')
+                        ,definition: {},
                         dflist:[],
                         LayoutName: localStorage.getItem('LayoutName')||"",
                         toolicon: true,
@@ -459,17 +467,20 @@
                             }
 
                         },
-                        activeNames: ['1', '2'],
+                        activeNames: ['1', '2','3'],
                         offset: 0
                     };
                 },
                 mounted() {
                     var that = this;
-                    svg = SVG().addTo('#paint').size(document.getElementById('paint').clientWidth, document.getElementById('paint').clientHeight).viewbox(0, 0, document.getElementById('paint').clientWidth,
-                        document.getElementById('paint').clientHeight).attr({
+                    let vb = localStorage.getItem('LayoutViewBox'), type = that.getQueryString('type');
+                    !vb ? (vb = [0, 0, document.getElementById('paint').clientWidth,
+                        document.getElementById('paint').clientHeight]) :( vb= vb.split(','));
+                    svg = SVG().addTo('#paint').size(document.getElementById('paint').clientWidth, document.getElementById('paint').clientHeight).
+                        viewbox(...vb.map(n => { return +n })).attr({
                         id: 'fiexedchart'
                         });
-                    setTimeout(function () {
+                    type!=='view'&& setTimeout(function () {
                         document.onkeydown = function (event) {
                             let target = event.target || event.srcElement;
                             console.log(target.nodeName);
@@ -488,7 +499,7 @@
                                         p.name = sid;
                                         
                                         that.obj[sid] = p;
-                                        that.select_shape(fs.split('_')[0], cate, p, sid);
+                                        that.select_shape(fs.split('_')[0], cate, p, sid,);
 
                                     }
 
@@ -519,16 +530,62 @@
 
                             //render paint
                             setTimeout(function (a, b, c) {
-                                a.select_shape(c.shape, c.category, c, b);
+                                a.select_shape(c.shape, c.category, c, b, type);//erg5 是否拖拽
                             }, (i + 1) * 100, that, cols[i], his[cols[i]]);
                         }
-                        that.LayoutName = localStorage.getItem('LayoutName');
+                        that.LayoutName = localStorage.getItem('LayoutName') || "";
+
+                        if (type === 'view') {
+                            Z('.viewpage').show();
+                            Z('.editpage').hide();
+                            Z('.toolicon').hide();
+                            Z('[ifrfocus]').removeAttr('ifricon');
+
+                        } else {
+                            Z('.viewpage').hide();
+                            Z('.editpage').show();
+                        }
+                        that.$forceUpdate();
                        
                     
                     }
                 },
                 methods: {
-                    dfclick(df) { },
+                    getQueryString(name) {
+                        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                        var r = window.location.search.substr(1).match(reg);
+                        if (r != null) return unescape(r[2]);
+                        return "";
+                    },
+                    render(val, init) {
+                        var that = this;
+                        //dflen = that.definition.shape.length +
+                        //    that.definition.color.length + that.definition.arrow.length;
+                        //val.length == dflen && (that.setAll = true)
+                        //val.length == 0 && (that.setAll = false);
+                        Z('[shape="area"]').each(function () {
+                            Z(this).removeClass('noselected');
+                        })
+                        val.map(n => {
+                            Z(`[id*='${n}']`).each(function () {
+                                //	console.log(Z(this)[0])
+                                Z(this).parent().addClass('noselected');
+                            })
+                        })
+                        //if (init) {
+                        //    this.definition.shape.map(n => {
+                        //        n.Number = Z(`#box [type='${n.type}']`).length
+                        //        return n;
+                        //    });
+                           
+                        //}
+                    },
+                    dfclick(df) {
+                        let that = this, item = df;
+                        that.dflist.includes(item) ?
+                            (that.dflist = _.remove(that.dflist, n => { return n !== item })) :
+                            that.dflist.push(item);
+                    },
                     rmv() {
                         this.$confirm('Remove current layout', 'Notice', {
                             confirmButtonText: 'Yes',
@@ -553,6 +610,7 @@
                        
                         localStorage.setItem("LayoutName", this.LayoutName);
                         localStorage.setItem('LayoutData', JSON.stringify(this.obj));
+                        localStorage.setItem('LayoutViewBox', [0, 0, document.getElementById('paint').clientWidth, document.getElementById('paint').clientHeight].join(','));
                         !!mes&&this.$message({
                             message: this.LayoutName+ ' save successful.',
                             type: 'success'
@@ -578,8 +636,9 @@
                         let prop = JSON.parse(JSON.stringify(this.prop));
                         this.select_shape(prop.shape, prop.category, prop, this.sid);
                     },
-                    select_shape(a, area, prop, sid) {
-
+                    select_shape(a, area, prop, sid, pagetype) {
+                        let dragable = true;
+                        if (pagetype == "view") { dragable = false; }
                         Z('#menu').hide();
                         let that = this,
                             query = "?";
@@ -660,7 +719,7 @@
 
 
                        
-                        that.ELE[sid] = svg.group().draggable();
+                        that.ELE[sid] = svg.group().draggable(dragable);
                         
                         //
                         that.obj[sid] = prop;//obj
