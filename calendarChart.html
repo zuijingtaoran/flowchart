@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Calendar chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="//unpkg.com/element-ui@2.13.0/lib/umd/locale/en.js"></script>
+    <style type="text/css">
+        * { font-family:Arial;
+        }
+        .el-calendar__body {
+            padding: 10px;
+        }
+        .is-selected {
+            color: steelblue;
+        }
+        .el-calendar__header {
+          
+            padding: 1.5vh 20px;
+        }
+            .el-calendar-table thead th {
+            padding: 1.5vh 0;
+           
+        }
+        .el-calendar-table .el-calendar-day { padding:4px; height:12vh;
+        }
+        .current { overflow:auto;
+        }
+        .task { color:#333;
+                height:12px;
+                font-size:12px;
+                line-height:12px;
+                margin:1px 3px; padding-left:2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <template>
+            <el-calendar first-day-of-week="7">
+            
+                <template slot="dateCell"
+                          slot-scope="{date, data}">
+                    <div :class="data.isSelected ? 'is-selected' : ''">
+                        {{ data.day.split('-').slice(-1)[0] }} {{ data.isSelected ? '✔️' : ''}}
+
+                    </div>
+                   
+                    <div class="task" v-for="t in task[data.day]" :style="{ 'background-color': t.bgcolor}">{{t.text}}</div>
+                   
+                </template>
+            </el-calendar>
+        </template>
+
+    </div>
+    <script>
+        ELEMENT.locale(ELEMENT.lang.en)
+        let Ctor1 = Vue.extend({
+            data() {
+                return {
+                    task:{
+                        '2019-12-19': [{
+                            bgcolor: 'steelblue',
+                            text:'Need check'
+                        }, {
+                                bgcolor: 'orange',
+                                text: 'Need PM'
+                            }, {
+                                bgcolor: 'green',
+                                text: 'NA'
+                            }],
+                        '2019-12-18': [{
+                            bgcolor: 'orange',
+                            text: 'check'
+                        }, {
+                            bgcolor: 'orange',
+                            text: 'Need PM'
+                        }, {
+                            bgcolor: 'green',
+                            text: 'NA'
+                        }]
+                    }
+                };
+            }
+
+
+
+        });
+        var app = new Ctor1().$mount('#app');
+    </script>
+</body>
+</html>
