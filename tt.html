@@ -68,6 +68,16 @@
 
 </head>
 <body>
+
+    <div class="task" v-for="t in task[data.day]" :style="{ 'background-color': t.bgcolor}">
+        <!--<el-tooltip placement="top">
+            <div slot="content">
+                <div v-for="0 in 4">{{o}}</div>
+            </div>-->
+        {{t.text}}
+        <!--</el-tooltip>-->
+    </div>
+
     <div id="paint"></div>
     <script src="./less/less.js"></script>
     <script>
@@ -103,7 +113,7 @@
         t.node.innerHTML = `<body xmlns="http://www.w3.org/1999/xhtml">
 <div class='ifr-head' id='${sid}'>
 <i class="material-icons" title="Menu" id="${sid}_mu" tid=${sid}>menu</i>
-     <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
+         <i class="material-icons" title="Close" id="${sid}_cls" tid=${sid}>close</i>
 </div>
 <iframe class="ifr-shape"  frameborder="0" src="./shape.html${query.replace(/&$/, '')}"></iframe>
 </body>`;
@@ -126,7 +136,7 @@
         });
 
 
-            /* draggable pattern */
+                /* draggable pattern */
     </script>
 </body>
 </html>

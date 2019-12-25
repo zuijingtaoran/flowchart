@@ -49,7 +49,15 @@
 
                     </div>
                    
-                    <div class="task" v-for="t in task[data.day]" :style="{ 'background-color': t.bgcolor}">{{t.text}}</div>
+                  
+                        <el-tooltip placement="right" class="task" v-for="t in task[data.day]" effect="light">
+        <div slot="content">
+            <div v-for="o in 4"><b>{{o}}.</b>{{ Math.random().toString(36).substr(2).split('').map(a => { return Math.random() + 0.5 > 1 ? a.toUpperCase() : a }).join('')}}</div>
+            <el-button size="mini">sub</el-button>
+        </div>
+        <div :style="{ 'background-color': t.bgcolor}"><i class="el-icon-s-flag" style="color:#000"></i> {{t.text}}</div>  
+                        </el-tooltip>
+                   
                    
                 </template>
             </el-calendar>
@@ -57,6 +65,7 @@
 
     </div>
     <script>
+       
         ELEMENT.locale(ELEMENT.lang.en)
         let Ctor1 = Vue.extend({
             data() {
@@ -71,8 +80,49 @@
                             }, {
                                 bgcolor: 'green',
                                 text: 'NA'
-                            }],
+                            }]
+                        ,
                         '2019-12-18': [{
+                            bgcolor: 'orange',
+                            text: 'check'
+                        }, {
+                            bgcolor: 'orange',
+                            text: 'Need PM'
+                        }, {
+                            bgcolor: 'green',
+                            text: 'NA'
+                            }],
+                        '2019-12-15': [{
+                            bgcolor: 'orange',
+                            text: 'check'
+                        }, {
+                            bgcolor: 'orange',
+                            text: 'Need PM'
+                        }, {
+                            bgcolor: 'green',
+                            text: 'NA'
+                            }],
+                        '2019-12-09': [{
+                            bgcolor: 'orange',
+                            text: 'check'
+                        }, {
+                            bgcolor: 'orange',
+                            text: 'Need PM'
+                        }, {
+                            bgcolor: 'green',
+                            text: 'NA'
+                            }],
+                        '2020-01-18': [{
+                            bgcolor: 'orange',
+                            text: 'check'
+                        }, {
+                            bgcolor: 'orange',
+                            text: 'Need PM'
+                        }, {
+                            bgcolor: 'green',
+                            text: 'NA'
+                            }],
+                        '2020-01-10': [{
                             bgcolor: 'orange',
                             text: 'check'
                         }, {
