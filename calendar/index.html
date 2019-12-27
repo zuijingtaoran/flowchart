@@ -10,7 +10,8 @@
 			body,html{ height: 100%;}
 			#dates-view{  height: 700px; width:1200px;}
 			.cal-date{ border: 1px solid #eee; }
-			
+			.cal-dates span{ vertical-align: top; padding: 2px;}
+			.cal-dates .cal-date{ text-align: left; overflow: auto;}
 		</style>
 	</head>
 	<body>
@@ -28,9 +29,12 @@
 			  viewMode: 0,
 			 
 			  onDatePick: function (time, $el, calendar) {
-			    console.log('选择时间：', time)
-			    console.log('选择DOM：', $el)
-			    console.log('日历实例：', calendar)
+			    // console.log('选择时间：', time)
+			    // console.log('选择DOM：', $el)
+			    // console.log('日历实例：', calendar)
+			  },
+			  render(){
+				  console.log(arguments)
 			  }
 			})
 		</script>
