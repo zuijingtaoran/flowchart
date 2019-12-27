@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="doc/min/calendar.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://yaohaixiao.github.io/calendar.js/css/calendar.css"/>
+		<style type="text/css">
+			*{ box-sizing: border-box; padding: 0px; margin: 0px;}
+			body,html{ height: 100%;}
+			#dates-view{  height: 700px; width:1200px;}
+			.cal-date{ border: 1px solid #eee; }
+			
+		</style>
+	</head>
+	<body>
+		 <div class="demo-example" id="dates-view"></div>
+		<script type="text/javascript">
+			new Calendar({
+			  
+			  parent: 'dates-view',
+			 
+			  time: '2019-12-27',
+			   hasSwitcher: false,
+			    // 不显示页脚
+			    hasFooter: false,
+			 DAYS:'Sun,Mon,Tues,Wed,Thur,Fri,Sat'.split(','),
+			  viewMode: 0,
+			 
+			  onDatePick: function (time, $el, calendar) {
+			    console.log('选择时间：', time)
+			    console.log('选择DOM：', $el)
+			    console.log('日历实例：', calendar)
+			  }
+			})
+		</script>
+	</body>
+</html>
