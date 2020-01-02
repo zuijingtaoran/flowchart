@@ -3,39 +3,172 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
-		<script src="doc/min/calendar.js"></script>
-		<link rel="stylesheet" type="text/css" href="https://yaohaixiao.github.io/calendar.js/css/calendar.css"/>
+		<script
+		  src="https://code.jquery.com/jquery-1.12.4.min.js"
+		  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+		  crossorigin="anonymous"></script>
+		<script src="doc/calendar.js"></script>
+		<script type="text/javascript" src="./layer-v3.1.1-0809/layer-v3.1.1/layer/layer.js">
+			
+		</script>
+		<link rel="stylesheet" type="text/css" href="doc/calendar.css" />
 		<style type="text/css">
-			*{ box-sizing: border-box; padding: 0px; margin: 0px;}
-			body,html{ height: 100%;}
-			#dates-view{  height: 700px; width:1200px;}
-			.cal-date{ border: 1px solid #eee; }
-			.cal-dates span{ vertical-align: top; padding: 2px;}
-			.cal-dates .cal-date{ text-align: left; overflow: auto;}
+			* {
+				box-sizing: border-box;
+				padding: 0px;
+				margin: 0px;
+			}
+
+			body,
+			html {
+				height: 100%;
+			}
+
+			#dates-view {
+				height: 700px;
+				width: 1200px;
+			}
+
+			.cal-date {
+				border: 1px solid #eee;
+			}
+
+			.cal-dates span {
+				vertical-align: top;
+				padding: 2px;
+				display: inline-block;
+			}
+
+			.cal-dates .cal-date {
+				text-align: left;
+				overflow: visible;
+			}
+
+			.cal-weekend {
+				color: gray;
+			}
+
+			.cal-date div {
+				margin: 0px 2px;
+				padding: 1px 3px;
+				font-size: .7em;
+				color: #343434;
+			}
+
+			 .steelblue {
+				background-color: steelblue;
+			}
+
+			 .green {
+				background-color: green;
+			}
+
+			 .gray {
+				background-color: gray;
+			}
+			.cal-title{ width: 100%;font-weight: bold; font-size: 20px;}
+			.cal-text{width: 100%;}
+			.definition{ display: inline-block; height: 20px; line-height: 20px; vertical-align: middle;
+			padding: 0px 6px;  font-size: 10px; float: right;
+			}
+			.definition:hover{ background: #dfdfdf;}
+			.definition i{ display: inline-block; width: 32px; height: 20px; font-size: 14px; line-height: 20px; color: #fff;
+			text-align: center; font-style: normal;
+			}
+			.definition-gray{ opacity: 0.5;}
+			 .tag {
+			           
+			            min-width: 50px;
+			            min-height: 30px;
+			            border: 1px solid #555;
+			            position: absolute;
+			            left: 1300px;
+			            top: 30px;
+			           /* background-color: #fff;
+			            color: #555; */
+						background-color: #333;
+						 color: #fff!important;
+			            text-align: center;
+			            padding: 5px 3px;
+			            border-radius: 6px;
+			            font-size: .8em;
+			            z-index: 1000;
+			            overflow: visible
+			        }
+			
+			            .tag:before, .tag:after {
+			                content: "";
+			                display: block;
+			                border-width: 1px;
+			                position: absolute;
+			                bottom: -20px;
+			                left: 20px;
+			                border-style: solid dashed dashed;
+			                border-color: #555 transparent transparent;
+			                font-size: 0;
+			                line-height: 0;
+			                border-width: 10px;
+			                z-index: 1001;
+			            }
+			
+			            .tag:after {
+			                bottom: -19px;
+			                z-index: 1002;
+			               border-color: #333 transparent transparent;
+			                /* border-color: #fff transparent transparent; */
+			            }
 		</style>
 	</head>
 	<body>
-		 <div class="demo-example" id="dates-view"></div>
+		<div id="dates-view" style="border:1px solid #bbb;
+padding:10px 10px; 
+
+resize:both;
+overflow:auto;"></div>
+		
 		<script type="text/javascript">
-			new Calendar({
-			  
-			  parent: 'dates-view',
-			 
-			  time: '2019-12-27',
-			   hasSwitcher: false,
-			    // 不显示页脚
-			    hasFooter: false,
-			 DAYS:'Sun,Mon,Tues,Wed,Thur,Fri,Sat'.split(','),
-			  viewMode: 0,
-			 
-			  onDatePick: function (time, $el, calendar) {
-			    // console.log('选择时间：', time)
-			    // console.log('选择DOM：', $el)
-			    // console.log('日历实例：', calendar)
-			  },
-			  render(){
-				  console.log(arguments)
-			  }
+			let calendar = new Calendar({
+				parent: 'dates-view',
+				
+				time: '2019-12-30',
+				onDatePick(time, $el, calendar) {
+					Math.floor( Math.random()*2)?
+						
+					layer.open({
+					  type: 2,
+					  title: 'Pop-out',
+					  shadeClose: true,
+					  shade: 0.8,
+					  area: ['70%', '80%'],
+					  content: './summary.html' //iframe的url
+					}):window.open('./summary.html','_blank')
+					
+				},
+				mounted(calendar) {
+				},
+				task() {
+					return {
+						'2019-12-28': [{
+								text: 'PM',
+								bgcolor: 'steelblue'
+							},
+							{
+								text: 'RUN',
+								bgcolor: 'green'
+							}
+						],
+						'2019-12-2': [{
+								text: 'IDLE',
+								bgcolor: 'gray'
+							},
+							{
+								text: 'RUN',
+								bgcolor: 'green'
+							}
+
+						],
+					}
+				}
 			})
 		</script>
 	</body>
