@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			.fl-table {
+
+				border-collapse: collapse;
+
+				margin: 0 auto;
+
+				text-align: center;
+				
+width: 100%;
+			}
+
+			.fl-table td,
+			.fl-table th {
+
+				border: 1px solid #cad9ea;
+
+				color: #666;
+
+				height: 30px;
+				padding: 2px 4px;
+
+			}
+
+			.fl-table th {
+
+				background-color: #333;
+				color: #fff;
+
+
+			}
+
+			.fl-table th {
+
+				background-color: #333;
+				color: #fff;
+
+
+			}
+
+			.fl-table th:first-letter {
+				text-transform: uppercase
+			}
+
+			.fl-table tr:nth-child(odd) {
+
+				background: aliceblue;
+
+			}
+
+			.fl-table tr:nth-child(even) {
+
+				background: #fff;
+
+			}
+		</style>
+		<script type="text/javascript" src="./table.js">
+			
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			
+		</div>
+		<script type="text/javascript">
+			let table = [{
+				"pid": "4",
+				"id": "4_28",
+				"p_name": "PKG Type:",
+				"ele": "input",
+				"ele_type": "text",
+				"min": "1",
+				"max": "",
+				"effect": "",
+				"readonly_flag": "readonly",
+				"encode": ",1.1,1.2,1.3,2.1,2.2",
+				"encode1": "",
+				"options": "USB3,iNAND,iNAND-Auto,uSD",
+				"value": "",
+				"ii_trigger": "change",
+				"required": "true",
+				"message": "validator_thicknessbinaazz",
+				"visible": "true"
+			}, {
+				"pid": "4",
+				"id": "4_1",
+				"p_name": "Connection Technology:",
+				"ele": "select",
+				"ele_type": "radio",
+				"min": "1",
+				"max": "",
+				"effect": "get_asic|4_16",
+				"readonly_flag": "",
+				"encode": " ,1.1,1.2,1.3,2.1,2.2",
+				"encode1": "",
+				"options": "WB,HFC",
+				"value": "",
+				"ii_trigger": "change",
+				"required": "true",
+				"message": "Please check your words",
+				"visible": "true"
+			}, {
+				"pid": "4",
+				"id": "4_3",
+				"p_name": "# of FIM Channel Max.\n:",
+				"ele": "select",
+				"ele_type": "radio",
+				"min": "1",
+				"max": "",
+				"effect": "",
+				"readonly_flag": "",
+				"encode": " ,1.1,1.2,1.3,2.1,2.2",
+				"encode1": "",
+				"options": "1,2,4",
+				"value": "",
+				"ii_trigger": "change",
+				"required": "true",
+				"message": "Please check your words",
+				"visible": "true"
+			}];
+			let json=[]
+			Array(2000).fill(0).map((n,i)=>{
+				json.push(table[i%3])
+			})
+			TABLE('container',json)
+		</script>
+	</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script
+		  src="https://code.jquery.com/jquery-1.12.4.min.js"
+		  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+		  crossorigin="anonymous"></script>
+		  
+		  <script type="text/javascript" src="./utility.js">
+		  	
+		  </script>
+		<style type="text/css">
+			
+			.demo {
+				width: 600px;
+				min-height: 300px;
+				height: 320px;
+				min-width: 150px;
+				resize: both;
+				overflow: auto;
+				border: 1px solid #bbb;
+				margin: 20px;
+				-webkit-user-select: none;
+			}
+			#info-demo{ height: 600px; width: 380px;}
+		</style>
+	</head>
+	<body>
+		<div id='table-demo' class="demo"></div>
+		<div id='kpi-demo' class="demo"></div>
+		<div id='info-demo' class="demo"></div>
+		<script type="text/javascript">
+			let kpi = [{
+				Name: 'Material Cost',
+				value: '$2000',
+				tooltip: 'tooltip',
+				
+				Color: '#0396FF',
+				Shape: 'area'
+			}, {
+				Name: 'Output',
+				value: '250000',
+				tooltip: 'tooltip',
+				
+				Color: '#F8D800',
+				Shape: 'area'
+			}, {
+				Name: 'Yield',
+				value: '89%',
+				tooltip: 'tooltip',
+			
+				Color: '#32CCBC',
+				Shape: 'pie'
+			}, {
+				Name: 'MLT',
+				value: '5.6',
+				tooltip: 'tooltip',
+				
+				Color: '#EA5455',
+				Shape: 'area'
+			}];
+			let info = {
+				ImageURL: "https://wallpaper.infinitynewtab.com/wallpaper/468.jpg",
+				DataSet: [{
+						'Chart Designed': 'Jennifer'
+					},
+					{
+						'Logic Defined': 'Samat'
+					},
+					{
+						'Last Update': '12/31/2019'
+					},
+					{
+						'Output Performance': 2
+					},
+					{
+						'Defect Escapee': 3.5
+					},
+					{
+						'Attandance': 4
+					},
+					{
+						'Total Performance': 4.5
+					},
+				],
+				Description: 'If you have a table that is too wide, you can add a container element'
+			}
+		</script>
+		<script type="text/javascript">
+			let fl=new UTILITY(render);
+	function render(){
+		fl.table('table-demo',[{'a':1,'b':2},{'a':1,'b':2},{'a':1,'b':2}]);
+		fl.kpi('kpi-demo',kpi);
+		fl.info('info-demo',info);
+		}
+		
+		
+		</script>
+	</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src='https://code.highcharts.com.cn/highcharts/highcharts.js'></script>
+		<script src="http://img.hcharts.cn/highcharts/themes/sand-signika.js">
+
+		</script><!-- <script src="http://img.hcharts.cn/highcharts/themes/gray.js"></script> -->
+	<script
+	  src="https://code.jquery.com/jquery-1.12.4.min.js"
+	  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+	  crossorigin="anonymous"></script>	<style type="text/css">
+	  
+			.container {
+				display: inline-block;
+				width: 20vw;
+				height: 15vw;
+				box-shadow: 2px 2px 4px #ccc;
+				margin-left: 10px;
+				border-radius: 0.5vw;
+				font-family: arial!important;
+			}
+
+			#KPI {
+				width: 900px;
+				height: 300px;
+				border: 1px solid #bbb;
+				resize: both;
+				padding: 10px;
+				overflow: auto;
+			}
+
+			.KPI-container {
+				display: inline-block;
+				margin: 5px;
+				border-radius: 7%;
+				float: left;
+				background: #fbfbfb;
+				width: 200px;
+				height: 140px;
+				box-shadow: 2px 2px 4px #ccc;
+				transition: all .4s;
+			}
+			.tag {
+			          
+			           min-width: 50px;
+			           min-height: 30px;
+			           border: 1px solid #555;
+			           position: absolute;
+			           left: 1300px;
+			           top: 30px;
+			          /* background-color: #fff;
+			           color: #555; */
+									background-color: #333;
+									 color: #fff!important;
+			           text-align: center;
+			           padding: 5px 3px;
+			           border-radius: 6px;
+			           font-size: .8em;
+			           z-index: 1000;
+			           overflow: visible
+			       }
+						
+			           .tag:before, .tag:after {
+			               content: "";
+			               display: block;
+			               border-width: 1px;
+			               position: absolute;
+			               bottom: -20px;
+			               left: 20px;
+			               border-style: solid dashed dashed;
+			               border-color: #555 transparent transparent;
+			               font-size: 0;
+			               line-height: 0;
+			               border-width: 10px;
+			               z-index: 1001;
+			           }
+						
+			           .tag:after {
+			               bottom: -19px;
+			               z-index: 1002;
+			              border-color: #333 transparent transparent;
+			               /* border-color: #fff transparent transparent; */
+			           }
+		</style>
+
+	</head>
+	<body>
+		<div id="KPI">
+
+		</div>
+	<!-- 	<div id='cost' class='container'></div>
+		<div id='yield' class='container'></div> -->
+		<script type="text/javascript">
+			let kpi = [{
+				Name: 'Material Cost',
+				value: '$2000',
+				tooltip: 'tooltip',
+				
+				Color: '#0396FF',
+				Shape: 'area'
+			}, {
+				Name: 'Output',
+				value: '250000',
+				tooltip: 'tooltip',
+				
+				Color: '#F8D800',
+				Shape: 'area'
+			}, {
+				Name: 'Yield',
+				value: '89%',
+				tooltip: 'tooltip',
+
+				Color: '#32CCBC',
+				Shape: 'pie'
+			}, {
+				Name: 'MLT',
+				value: '5.6',
+				tooltip: 'tooltip',
+				
+				Color: '#EA5455',
+				Shape: 'area'
+			}];
+		</script>
+		<script type="text/javascript">
+			class KPICHART {
+				constructor(container = 'kpi', data = []) {
+
+					this.viewBox = [document.getElementById(container).clientWidth, document.getElementById(container).clientHeight];
+					this.parent=document.getElementById(container);
+					this.data = data;
+					this.render();
+				}
+				render() {
+					let that = this,data=that.data,
+						len =data.length;
+					let
+						cw = that.viewBox[1] / (len + 0.2);
+					cw < 200 && (cw = 200);
+
+					let ch = cw * 0.618,
+						tt = ch * 0.618,
+						ts =20; //tt + 20;
+						data.map((n,i)=>{
+							let dom=document.createElement('div');
+							dom.setAttribute('class','KPI-container');
+							dom.setAttribute('id',btoa(n.Name));
+							dom.style.width=cw;
+							dom.style.height=ch;
+							//add event
+							dom.addEventListener('click',function(e){
+								let t=e.target||e.srcElement;
+								alert('x')
+							},true)
+							dom.addEventListener('mouseover',function(e){
+								let t=e.target||e.srcElement;
+								t=$(t).parents('.KPI-container');
+								let aa=	$(t).offset().top　　//推荐
+									
+								let bb=	$(t).offset().left
+									$('body').append('<div class=\'tag\'>Tooltip</div>')
+									$('.tag').css({
+										top:aa+t.height()*0.482-60,
+										left:t.width()/2+bb-25
+									})
+							},true)
+							dom.addEventListener('mouseout',function(e){
+								let t=e.target||e.srcElement;
+								$('.tag').remove();
+							},true)
+							this.parent.appendChild(dom);
+							if(n.Shape==='pie'){
+								n.instance=Highcharts.chart(btoa(n.Name), {
+				chart: {
+					type: 'pie',
+					spacing: [0, -10, 0, -10]
+				},
+				colors:[n.Color,'#ededed'],
+				credits: {
+					enabled: false
+				},
+				exporting: {
+					enabled: false
+				},
+				tooltip: {
+					enabled: false
+				},
+				title: {
+					text: n.value,
+					floating: true,
+					align: 'center',
+					y: tt,
+					style: {
+						color: that.ColorReverse(n.Color),
+						'font-weight': 'bold',
+						'font-size': '24px'
+					}
+				},
+				subtitle: {
+					text: n.Name,
+					floating: true,
+					align: 'center',
+					y: tt+20,
+					style: {
+						color: '#4a4b2e', // '#dddf0d',
+						'text-shadow': '1px 1px #fff',
+						'font-size': '16px'
+					}
+				},
+				plotOptions: {
+					pie: {
+						innerSize: tt,
+						dataLabels: {
+							enabled: false
+						}
+					}
+				},
+				series: [{
+					data: [
+						['', +n.value.replace('%','')],
+						['', 100- +n.value.replace('%','')],
+					]
+				}]
+			});
+								
+							}else{
+								n.instance=Highcharts.chart(btoa(n.Name), {
+				chart: {
+					type: 'area',
+					spacing: [0, -10, 0, -10]
+				},
+					colors:[n.Color,'#ededed'],
+				credits: {
+					enabled: false
+				},
+				exporting: {
+					enabled: false
+				},
+				tooltip: {
+					enabled: false
+				},
+				title: {
+					text: n.value,
+					floating: true,
+					align: 'center',
+					y: tt,
+					style: {
+						color:that.ColorReverse(n.Color),
+						'font-weight': 'bold',
+						'font-size': '24px'
+					}
+				},
+				subtitle: {
+					text: n.Name,
+					floating: true,
+					align: 'center',
+					y: 20,
+					style: {
+						color: '#4a4b2e', // '#dddf0d',
+						'text-shadow': '1px 1px #fff',
+						'font-size': '16px'
+					}
+				},
+				yAxis: {
+					visible: false
+				},
+				xAxis: {
+					visible: false
+				},
+				legend: {
+					enabled: false
+				},
+				plotOptions: {
+					area: {
+
+						lineWidth: 0,
+						marker: {
+							enabled: false,
+							states: {
+								hover: {
+									enabled: false
+								}
+							}
+						}
+					}
+				},
+				series: [{
+					name: '',
+					data: n.range||Array(12).fill(250000)
+				}]
+			});
+								
+								
+							}
+							
+							return n;
+						})
+
+				}
+				ColorReverse(OldColorValue){
+				var OldColorValue = '0x'+OldColorValue.replace(/#/g,"");
+				var str='000000'+(0xFFFFFF-OldColorValue).toString(16);
+				return '#' + str.substring(str.length-6,str.length);
+				}
+				
+				}
+		</script>
+		<script>
+			new KPICHART('KPI',kpi);
+			
+		
+			// var chart = Highcharts.chart('cost', {
+			// 	chart: {
+			// 		type: 'area',
+			// 		spacing: [0, -10, 0, -10]
+			// 	},
+			// 	colors: ['steelblue', '#f8f8f8'],
+			// 	credits: {
+			// 		enabled: false
+			// 	},
+			// 	exporting: {
+			// 		enabled: false
+			// 	},
+			// 	tooltip: {
+			// 		enabled: false
+			// 	},
+			// 	title: {
+			// 		text: '$2600',
+			// 		floating: true,
+			// 		align: 'center',
+			// 		y: 100,
+			// 		style: {
+			// 			color: '#df5353',
+			// 			'font-weight': 'bold',
+			// 			'font-size': '20px'
+			// 		}
+			// 	},
+			// 	subtitle: {
+			// 		text: 'Material Cost',
+			// 		floating: true,
+			// 		align: 'center',
+			// 		y: 120,
+			// 		style: {
+			// 			color: '#4a4b2e', // '#dddf0d',
+			// 			'text-shadow': '1px 1px #fff',
+			// 			'font-size': '13px'
+			// 		}
+			// 	},
+			// 	yAxis: {
+			// 		visible: false
+			// 	},
+			// 	xAxis: {
+			// 		visible: false
+			// 	},
+			// 	legend: {
+			// 		enabled: false
+			// 	},
+			// 	plotOptions: {
+			// 		area: {
+
+			// 			lineWidth: 0,
+			// 			marker: {
+			// 				enabled: false,
+			// 				states: {
+			// 					hover: {
+			// 						enabled: false
+			// 					}
+			// 				}
+			// 			}
+			// 		}
+			// 	},
+			// 	series: [{
+			// 		name: '',
+			// 		data: [439, 525, 570, 696, 970, 1199, 1371, 1541]
+			// 	}]
+			// });
+			// var yield = Highcharts.chart('yield', {
+			// 	chart: {
+			// 		type: 'pie',
+			// 		spacing: [0, -10, 0, -10]
+			// 	},
+			// 	colors: ['steelblue', '#ededed'],
+			// 	credits: {
+			// 		enabled: false
+			// 	},
+			// 	exporting: {
+			// 		enabled: false
+			// 	},
+			// 	tooltip: {
+			// 		enabled: false
+			// 	},
+			// 	title: {
+			// 		text: '$2600',
+			// 		floating: true,
+			// 		align: 'center',
+			// 		y: 100,
+			// 		style: {
+			// 			color: '#df5353',
+			// 			'font-weight': 'bold',
+			// 			'font-size': '20px'
+			// 		}
+			// 	},
+			// 	subtitle: {
+			// 		text: 'Material Cost',
+			// 		floating: true,
+			// 		align: 'center',
+			// 		y: 120,
+			// 		style: {
+			// 			color: '#4a4b2e', // '#dddf0d',
+			// 			'text-shadow': '1px 1px #fff',
+			// 			'font-size': '13px'
+			// 		}
+			// 	},
+			// 	plotOptions: {
+			// 		pie: {
+			// 			innerSize: 200,
+			// 			dataLabels: {
+			// 				enabled: false
+			// 			}
+			// 		}
+			// 	},
+			// 	series: [{
+			// 		data: [
+			// 			['Firefox', 45.0],
+			// 			['IE', 26.8],
+			// 		]
+			// 	}]
+			// });
+		</script>
+	</body>
+</html>

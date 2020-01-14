@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<style type="text/css">
+			* {
+				box-sizing: border-box;
+				margin: 0px;
+				padding: 0px;
+			}
+
+			#container {
+				width: 300px;
+				min-height: 300px;
+				height: 400px;
+				min-width: 150px;
+				resize: both;
+				overflow: auto;
+				border: 1px solid #bbb;
+				margin: 20px;
+				-webkit-user-select: none;
+			}
+
+			.fl-row { margin-top: 4px;}
+
+			.fl-desc {
+				height: 18px;
+				display: inline-block;
+				font-family: arial;
+				font-size: 14px;
+				line-height: 18px;
+				width: 47%;
+				background-color: steelblue;
+				color: #fff;
+
+				text-align: center;
+				vertical-align: middle;
+				position: relative;
+				overflow: hidden;
+
+			}
+
+			.fl-desc:first-letter {
+				//color: gold;
+				/* font-weight: bold; */
+
+			}
+
+			.fl-desc-::before {
+				position: absolute;
+				content: '';
+				height: 0;
+				width: 0;
+				top: 0px;
+				left: 0px;
+				font-size: 0;
+				line-height: 0;
+				border-color: #fff steelblue transparent transparent;
+				border-style: solid solid dashed dashed;
+				border-width: 18px 18px 0 0;
+			}
+
+			.fl-desc::after {
+				position: absolute;
+				content: '';
+				height: 0;
+				width: 0;
+				top: 0px;
+				right: 0px;
+				font-size: 0;
+				line-height: 0;
+				border-color: steelblue #fff transparent transparent;
+				border-style: solid solid dashed dashed;
+				border-width: 18px 18px 0 0;
+			}
+
+			.fl-star-box {
+				position: relative;
+				vertical-align: middle;
+				display: inline-block;
+				height: 18px;
+				width: 52%;
+				border-bottom: 1px solid steelblue;
+				border-top: 1px solid steelblue;
+				line-height: 15px;
+				z-index: 3;
+				margin-left: -36px;
+				padding-left: 36px;
+				padding-right: 20px;
+				overflow: visible; 
+			}
+
+			.fl-star-box-::before {
+				position: absolute;
+				content: '';
+				height: 0;
+				width: 0;
+				top: 0px;
+				right: 1px;
+				font-size: 0;
+				line-height: 0;
+				border-color: #fff transparent transparent transparent;
+				border-style: solid solid dashed dashed;
+				border-width: 16px 16px 0 0;
+				z-index: 3;
+			}
+
+			.fl-star-box-::after {
+				position: absolute;
+				content: '';
+				height: 0;
+				width: 0;
+				top: 0px;
+				right: 0px;
+				font-size: 0;
+				line-height: 0;
+				border-color: steelblue #fff transparent transparent;
+				border-style: solid solid dashed dashed;
+				border-width: 17px 16px 0 0;
+			}
+
+			.fl-star-box .material-icons {
+				font-size: 14px;
+			}
+
+			.fl-star-box .fl-star {
+				color: gold;
+				display: inline-block;
+
+				margin-right: 2px;
+				cursor: pointer;
+				float: left;
+			}
+
+			.fl-star-box .fl-user {
+				font-size: 13px;
+				color: #353535;
+			}
+
+			.fl-star-box [fl-nhl] {
+				color: #B2B2B2;
+			}
+
+			.fl-card {
+
+				height: calc(100% - 14px);
+				display: inline-block;
+				position: relative;
+
+				padding: 0px;
+				background: #fff;
+				/* box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); */
+
+
+
+
+				/* background-image: url('https://www.highcharts.com/samples/graphics/sand.png'); 
+				background-repeat: repeat;*/
+			}
+
+			/* 	.fl-card::before,
+			.fl-card::after {
+				position: absolute;
+				content: "";
+				top: 10px;
+				bottom: 15px;
+				left: 10px;
+				width: 50%;
+				box-shadow: 0 15px 10px rgba(0, 0, 0, 0.5);
+				-webkit-transform: rotate(-3deg);
+				-moz-transform: rotate(-3deg);
+				-o-transform: rotate(-3deg);
+				-ms-transform: rotate(-3deg);
+				transform: rotate(-3deg);
+				z-index: -1;
+			}
+
+			.fl-card::after {
+				right: 10px;
+				left: auto;
+				-webkit-transform: rotate(3deg);
+				-moz-transform: rotate(3deg);
+				-o-transform: rotate(3deg);
+				-ms-transform: rotate(3deg);
+				transform: rotate(3deg);
+			} */
+
+
+			.fl-card-head {
+				height: 41.2%;
+				min-height: 136px;
+			}
+
+			.fl-card-head img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				margin: 0px;
+			}
+
+			.fl-card-foot {
+				height: 40px;
+				position: absolute;
+				bottom: 0px;
+			}
+
+			.fl-card-body {
+				position: absolute;
+				padding: 8px;
+				overflow-y: auto;
+				top: 41.2%;
+				bottom: 40px;
+				left: 0px;
+				right: 0px;
+
+			}
+
+			.fl-table {
+
+				border-collapse: collapse;
+
+				margin: 0 auto;
+
+				text-align: center;
+				display: block;
+
+			}
+
+			.fl-table td,
+			.fl-table th {
+
+				border: 1px solid #cad9ea;
+
+				color: #666;
+
+				height: 30px;
+
+			}
+
+			.fl-table th {
+
+				background-color: #333;
+				color: #fff;
+
+
+			}
+
+			.fl-table th {
+
+				background-color: #333;
+				color: #fff;
+
+
+			}
+
+			.fl-table th:first-letter {
+				text-transform: uppercase
+			}
+
+			.fl-table tr:nth-child(odd) {
+
+				background: aliceblue;
+
+			}
+
+			.fl-table tr:nth-child(even) {
+
+				background: #fff;
+
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<!-- <div class="fl-card" id="demo">
+				<div class='fl-card-head'>
+					<img src="https://wallpaper.infinitynewtab.com/wallpaper/468.jpg" alt="">
+				</div>
+				<div class='fl-card-body'>
+					<div class="fl-row">
+						<div class="fl-desc">
+							Chart Designed
+						</div>
+						<div class="fl-star-box">
+							<span class="fl-user">Jennifer</span>
+						</div>
+					</div>
+
+					<div>
+						<div class="fl-desc">
+							Logic Defined
+						</div>
+						<div class="fl-star-box">
+
+							<span class="fl-user"> Samat</span>
+						</div>
+					</div>
+					<div>
+						<div class="fl-desc">
+							Last Update
+						</div>
+						<div class="fl-star-box">
+							<div class="fl-user">12/31/2019</div>
+						</div>
+					</div>
+					<div>
+						<div class="fl-desc">
+							Rate
+						</div>
+						<div class="fl-star-box">
+
+							<span class="fl-star material-icons" hl>star</span>
+							<span class="fl-star material-icons" hl>star_half</span>
+							<span class="fl-star material-icons" nhl>star_border</span>
+							<span class="fl-star material-icons" nhl>star_border</span>
+							<span class="fl-star material-icons" nhl>star_border</span>
+						</div>
+					</div>
+
+				</div>
+
+				<div class='fl-card-foot'>
+					<i style="font-size: 10px; color: #777; margin: 0px 6px;">
+						If you have a table that is too wide, you can add a container element</i>
+				</div>
+			</div> -->
+
+		</div>
+		<div id="table-box"></div>
+
+
+		<script>
+			let info = {
+				ImageURL: "https://wallpaper.infinitynewtab.com/wallpaper/468.jpg",
+				DataSet: [{
+						'Chart Designed': 'Jennifer'
+					},
+					{
+						'Logic Defined': 'Samat'
+					},
+					{
+						'Last Update': '12/31/2019'
+					},
+					{
+						'Output Performance': 2
+					},
+					{
+						'Defect Escapee': 3.5
+					},
+					{
+						'Attandance': 4
+					},
+					{
+						'Total Performance': 4.5
+					},
+				],
+				Description: 'If you have a table that is too wide, you can add a container element'
+			}
+			class INFO {
+				constructor(container = 'info-box', data = [{}]) {
+					this.container = container;
+					this.data = data;
+					this.template = {
+						box(head, body, foot) {
+							return `<div class="fl-card" id="demo">
+				<div class='fl-card-head'>${head}</div>
+				<div class='fl-card-body'>${body}</div>
+				<div class='fl-card-foot'>${foot}</div>
+				</div>
+				`
+
+						},
+						head(url) {
+							return `
+					
+						<img src="${url}" alt="">
+					
+				`
+						},
+						desc_text(a, b) {
+							return `<div class="fl-row">
+						<div class="fl-desc">
+							${a}
+						</div>
+						<div class="fl-star-box">
+							<span class="fl-user">${b}</span>
+						</div>
+					</div>`
+						},
+						desc_star(a, b) {
+							let q = Math.floor(b),
+								w = b - q,
+								e = 5 - Math.ceil(b),
+								stars = '';
+							Array(q).fill(q).map(n => {
+								stars += '<span class="fl-star material-icons" fl-hl>star</span>'
+							});
+							w > 0.01 && (stars += '<span class="fl-star material-icons" fl-hl>star_half</span>');
+							Array(e).fill(e).map(n => {
+								stars += '<span class="fl-star material-icons" fl-nhl>star_border</span>'
+							});
+
+							return `<div class="fl-row"><div class="fl-desc">
+							${a}
+						</div>
+						<div class="fl-star-box">
+
+							${stars}
+						</div></div>`
+						},
+						star() {
+							return '<span class="fl-star material-icons" fl-hl>star</span>'
+						},
+						star_half() {
+							return '<span class="fl-star material-icons" fl-hl>star_half</span>'
+						},
+						star_border() {
+							return '<span class="fl-star material-icons" fl-nhl>star_border</span>'
+						},
+						foot(a) {
+							return `<i style="font-size: 10px; color: #777; margin: 0px 6px;">
+						${a}</i>`
+						}
+
+					}
+					this.render()
+				}
+				render() {
+					let that = this,
+						body = "";
+
+					that.data.DataSet.map(n => {
+						let prop = Object.keys(n)[0],
+							value = n[prop];
+						if (value <= 5) {
+							body += that.template.desc_star(prop, +value)
+						} else {
+							body += that.template.desc_text(prop, value)
+						}
+
+
+					})
+					document.getElementById(that.container).innerHTML = that.template.box(that.template.head(that.data.ImageURL),
+						body, that.template.foot(that.data.Description)
+					)
+				}
+			}
+
+			new INFO('container', info)
+		</script>
+		<script>
+			// console.time(1)
+			// let t = document.createElement('table'),
+			// 	tr_h = document.createElement('tr'),
+			// 	th = null,
+			// 	tr_d = null,
+			// 	td = null;
+			// t.setAttribute('class', 'fl-table');
+			// Object.keys(json[0]).map((n, i) => {
+			// 	th = document.createElement('th');
+			// 	th.innerHTML = n;
+			// 	tr_h.append(th)
+			// })
+			// t.append(tr_h)
+			// json.map((n, i) => {
+			// 	tr_d = document.createElement('tr');
+			// 	Object.keys(n).map(a => {
+			// 		td = document.createElement('td');
+			// 		td.innerHTML = n[a];
+			// 		tr_d.append(td)
+			// 	})
+			// 	t.append(tr_d)
+			// })
+			// document.getElementById('table-box').append(t)
+			// console.timeEnd(1)
+		</script>
+	</body>
+</html>
