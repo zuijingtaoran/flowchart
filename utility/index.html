@@ -3,39 +3,144 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
+		<script
+		  src="https://code.jquery.com/jquery-1.12.4.min.js"
+		  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+		  crossorigin="anonymous"></script>
+		  
+		  <script type="text/javascript" src="./doc/utility.js">
+		  	
+		  </script>
 		<style type="text/css">
-			.demo{width: 100px; height: 30px;
-			box-sizing: border-box;
-			position: relative;
-			background-color: steelblue; color: #fff;
-			margin: 30px;
-			line-height: 30px; 
+			
+			.demo {
+				width: 600px;
+				min-height: 300px;
+				height: 320px;
+				min-width: 150px;
+				resize: both;
+				overflow: auto;
+				border: 1px solid #bbb;
+				margin: 20px;
+				-webkit-user-select: none; position: relative; padding-bottom:10px ;
 			}
-			.demo::after {
-			    position: absolute;
-			    content: '';
-			    height: 0;
-			    width: 0;
-			    top: 0px;
-			    right: -30px;
-			    font-size: 0;
-			    line-height: 0;
-			    border-color: transparent transparent steelblue steelblue;
-			    border-style: solid solid solid solid;
-			    border-width: 15px 15px 15px 15px;
-			}
-			.triangle{
-				height: 0;
-				width: 0;
-				border-color: red yellow green blue; 
-				border-style: solid solid solid solid;
-				border-width: 45px 45px 45px 45px;
-			}
+			#info-demo,#info-rect-demo{ height: 600px; width: 380px;}
 		</style>
 	</head>
 	<body>
-		<div class="demo">demo</div>
+		<div id='table-demo' class="demo"></div>
+		<div id='kpi-demo' class="demo"></div>
+		<div id='info-demo' class="demo"></div>
+		<div id='info-rect-demo' class="demo"></div>
+		<div id="calendar-demo" class="demo"></div>
+		<script type="text/javascript">
+			let kpi = [{
+				name: 'Material Cost',
+				value: '$2000',
+				tooltip: 'tooltip'
+				,width:'200',
+				
+				color: '#0396FF',
+				shape: 'area'
+			}, {
+				name: 'Output',
+				value: '250000',
+				tooltip: 'tooltip',
+				
+				color: '#F8D800',
+				shape: 'area',width:'200'
+			}, {
+				name: 'Yield',
+				value: '89%',
+				tooltip: 'tooltip',
+			
+				color: '#32CCBC',
+				shape: 'pie'	,width:'200'
+			}, {
+				name: 'MLT',
+				value: '5.6',
+				tooltip: 'tooltip',
+				
+				color: '#EA5455',
+				shape: 'area'	,width:'200'
+			}];
+			let info_data=[{
+				"key":"Chart Designed",
+				"value":"Jennifer"},
+				{"key":"Logic Designed",
+				"value":"Samat"},
+				{"key":"Last Designed",
+				"value":"12/31/2019"},
+				{"key":"Output Performance",
+				"value":"2star"},
+				{"key":"Output Performance",
+				"value":"2.5star"},
+				{"key":"Output Performance",
+				"value":"2star"
+			}]
+			let info = {
+				imageurl: "https://wallpaper.infinitynewtab.com/wallpaper/3129.jpg",
+				imageshape:'circle',
+				dataset: info_data,
+				Description: 'If you have a table that is too wide, you can add a container element'
+			}
+			let info_rect = {
+				imageurl: "https://wallpaper.infinitynewtab.com/wallpaper/3019.jpg",
+				imageshape:'',
+				dataset: info_data,
+				description: 'If you have a table that is too wide, you can add a container element'
+			}
+			let calendar={
+					'2019-12-28': [{
+							text: 'PM',
+							bgcolor: 'steelblue'
+						},
+						{
+							text: 'RUN',
+							bgcolor: 'green'
+						}
+					],
+					'2019-12-2': [{
+							text: 'IDLE',
+							bgcolor: 'gray'
+						},
+						{
+							text: 'RUN',
+							bgcolor: 'green'
+						}
 		
-		<div class="triangle"></div>
+					],
+				}
+				calendar=[{"date":"2019-12-15","text":"PM","bgcolor":"steelblue","tooltip":"name:samat;id:34851;role:Manager"},
+				{"date":"2019-12-15","text":"RUN","bgcolor":"green","tooltip":"name:xx;id:123;role:Manager"},
+				{"date":"2019-12-16","text":"RUN","bgcolor":"green","tooltip":"name:xx;id:123;role:Manager"}
+				
+				]
+		</script>
+		<script type="text/javascript">
+			window.fl=new UTILITY(render,{a:1});
+	function render(arg){
+		console.log(arg);
+		fl.table('table-demo',[{'name':'<a targer=_blank href="http://google.com">Samat</a>','value':'<span class="td-cell" style="color:red">123<i class=material-icons>done</i></span>'},
+		{'name':'<a targer=_blank href="http://google.com">QW</a>','value':'<span class="td-cell" style="background-color:green;color:#fff">1</span>'},
+		{'name':'<a targer=_blank href="http://google.com">JG</a>','value':'<span class="td-cell" >3</span>'}]);
+		fl.kpi('kpi-demo',kpi)
+		fl.info('info-demo',info);
+	fl.info('info-rect-demo',info_rect);
+		fl.calendar('calendar-demo','2019-12-15',calendar)
+		
+		/*
+		@ export excel CSV
+		@ argument 1:json data
+		@ argument 2:filename		
+		*/
+		
+		//fl.JSONToExcelConvertor({'a':1},'excel');
+		//fl.JSONToCSVConvertor({'a':1},'csv');
+		
+		}
+		
+		
+		</script>
 	</body>
 </html>

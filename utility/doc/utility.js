@@ -1,57 +1,48 @@
 class UTILITY {
-	constructor(callback) {
+	constructor(callback,arg) {
 		this.plugin = [{
-				url: 'https://unpkg.com/vue/dist/vue.js',
-				name: 'vue',
-				enabled: false,
-				type: 'js'
-			},{
-				url: './lib/highcharts.js',
-				name: 'highchart',
-				enabled: true,
-				type: 'js'
-			},{
-				url: 'http://img.hcharts.cn/highcharts/themes/sand-signika.js',
-				name: 'highchart-sand',
-				enabled: true,
-				type: 'js'
-			},
-			{
-				url: 'https://unpkg.com/element-ui@2.13.0/lib/index.js',
-				name: 'element',
-				enabled: false,
-				type: 'js'
-			},
-			{
-				url: '//unpkg.com/element-ui@2.13.0/lib/umd/locale/en.js',
-				name: 'element-en',
-				enabled: false,
-				type: 'js'
-			},
-			{
-				url: 'https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css',
-				name: 'element-css',
-				enabled: false,
-				type: 'css'
-			},
-			{
-				url: 'https://fonts.googleapis.com/icon?family=Material+Icons',
-				name: 'icons',
-				enabled: true,
-				type: 'css'
-			},
-			{
-				url: './utility.css',
-				name: 'utility-css',
-				enabled: true,
-				type: 'css'
-			}
+			url: "http://cvpmdsip03/tools/utility-prd/doc/lib/highchart/highcharts.js",
+			name: "highchart",
+			enabled: !0,
+			type: "js"
+		}, {
+			url: "http://img.hcharts.cn/highcharts/themes/sand-signika.js",
+			name: "highchart-sand",
+			enabled: !0,
+			type: "js"
+		}, {
+			url: "https://fonts.googleapis.com/icon?family=Material+Icons",
+			name: "icons",
+			enabled: !0,
+			type: "css"
+		}, {
+			url: "http://cvpmdsip03/tools/utility-prd/doc/lib/calendar/calendar.css",
+			name: "calendar-css",
+			enabled: !0,
+			type: "css"
+		}, {
+			url: "./doc/lib/calendar/calendar.js",
+			name: "calendar",
+			enabled: !0,
+			type: "js"
+		}, {
+			url: "http://cvpmdsip03/tools/utility-prd/doc/lib/layer-v3.1.1-0809/layer-v3.1.1/layer/layer.js",
+			name: "layer",
+			enabled: !0,
+			type: "js"
+		}, {
+			url: "./doc/utility.css",
+			name: "utility-css",
+			enabled: !0,
+			type: "css"
+		}
 
 		];
 		this.viewBox = null;
 		this.parent = null;
 		this.data = null;
 		this.callback=callback||function(){};
+		this.arg=arg;
 		this.template = {
 				box(head, body, foot) {
 					return `<div class="fl-card" id="demo">
@@ -62,10 +53,10 @@ class UTILITY {
 		`
 		
 				},
-				head(url) {
+				head(url,cls) {
 					return `
 			
-				<img src="${url}" alt="">
+			<div class=${!!cls?'fl-'+cls:''}>	<img src="${url}" alt=""></div>
 			
 		`
 				},
@@ -158,7 +149,7 @@ class UTILITY {
 			}
 
 		} else {
-			b()
+			b(that.arg)
 		}
 
 	}
@@ -168,33 +159,40 @@ class UTILITY {
 
 	table(a, b) {
 		var that=this;
-let xls=document.createElement('span');
-//  <div id="btn_Menu" class="material-icons" style="color:steelblue; cursor:pointer"
- //title="Menu" onclick="ShowChartMenuItems('btn_Menu');">menu</div>
-xls.setAttribute('href','javascript:;')
-xls.setAttribute('class','material-icons')
-xls.style.float='right';
-xls.innerText="menu";
-xls.onmouseover=function(){
-	//that.JSONToExcelConvertor(b,a);
-	menu.style.display='inline-block';
-}
-//
-let menu=document.createElement('span');
-menu.setAttribute("class","fl-menu");
-//
-let [excel,csv,format]=[document.createElement('span'),document.createElement('span'),['xls','csv']];
-[excel.innerText,csv.innerText]=["Export Excel","Export CSV"];
-[excel,csv].map((n,i)=>{
-	n.onclick=function(){
-		i==0&&that.JSONToExcelConvertor(b,a);
-		i==1&&that.JSONToCSVConvertor(b,a);
+		 document.getElementById(a).innerHTML="";
+// let xls=document.createElement('span');
+// //  <div id="btn_Menu" class="material-icons" style="color:steelblue; cursor:pointer"
+//  //title="Menu" onclick="ShowChartMenuItems('btn_Menu');">menu</div>
+// xls.setAttribute('href','javascript:;')
+// xls.setAttribute('class','material-icons')
+// xls.style.float='right';
+// xls.innerText="menu";
+// xls.onclick=function(){
+// 	//that.JSONToExcelConvertor(b,a);
+// 	menu.style.display=='inline-block'?(menu.style.display='none'):(
+// 	menu.style.display='inline-block'
+// 	)
+// }
+// //
+// let menu=document.createElement('span');
+// menu.setAttribute("class","fl-menu");
+// menu.onclick=function(){
+// 	//that.JSONToExcelConvertor(b,a);
+// 	menu.style.display='none';
+// }
+// //
+// let [excel,csv,format]=[document.createElement('span'),document.createElement('span'),['xls','csv']];
+// [excel.innerText,csv.innerText]=["Export Excel","Export CSV"];
+// [excel,csv].map((n,i)=>{
+// 	n.onclick=function(){
+// 		i==0&&that.JSONToExcelConvertor(b,a);
+// 		i==1&&that.JSONToCSVConvertor(b,a);
 		
-	}
-	menu.append(n);
-})
-document.getElementById(a).append(menu);
-document.getElementById(a).append(xls);
+// 	}
+// 	menu.append(n);
+// })
+// document.getElementById(a).append(menu);
+// document.getElementById(a).append(xls);
 		let c = document.createElement("table"),
 			d = document.createElement("tr"),
 			e = null,
@@ -211,23 +209,29 @@ document.getElementById(a).append(xls);
 	}
 	kpi(container,data) {
 		let that = this;
+		 document.getElementById(container).innerHTML="";
 		that.viewBox = [document.getElementById(container).clientWidth, document.getElementById(container).clientHeight];
 		that.parent=document.getElementById(container);
 		that.data = data;
 		let len=data.length;
-		let
-			cw = that.viewBox[1] / (len + 0.2);
-		cw < 200 && (cw = 200);
+		// let
+		// 	cw = that.viewBox[1] / (len + 0.2);
+		// cw < 200 && (cw = 200);
 
-		let ch = cw * 0.618,
-			tt = ch * 0.618,
-			ts = 20; //tt + 20;
+		// let ch = cw * 0.618,
+		// 	tt = ch * 0.618,
+		// 	ts = 20; //tt + 20;
+		let cw,ch,tt,ts;
 		data.map((n, i) => {
+			cw=+n.width;
+			ch = cw * 0.618,
+				tt = ch * 0.618,
+			 	ts = 20;
 			let dom = document.createElement('div');
 			dom.setAttribute('class', 'fl-KPI-container');
-			dom.setAttribute('id', btoa(n.Name));
-			dom.style.width = cw;
-			dom.style.height = ch;
+			dom.setAttribute('id', btoa(n.name));
+			dom.style.width = cw+'px';
+			dom.style.height = ch+'px';
 			//add event
 			dom.addEventListener('click', function(e) {
 				let t = e.target || e.srcElement;
@@ -241,8 +245,10 @@ document.getElementById(a).append(xls);
 				let bb = $(t).offset().left
 				$('body').append('<div class=\'fl-tag\'>Tooltip</div>')
 				$('.fl-tag').css({
-					top: aa + t.height() * 0.482 - 60,
-					left: t.width() / 2 + bb - 25
+					// top: aa + t.height() * 0.482-42, //- 60,
+					// left: t.width() /2 + bb -25
+					 top: aa , //- 60,
+					left: bb+t.width()-35 
 				})
 			}, true)
 			dom.addEventListener('mouseout', function(e) {
@@ -250,13 +256,13 @@ document.getElementById(a).append(xls);
 				$('.fl-tag').remove();
 			}, true)
 			this.parent.appendChild(dom);
-			if (n.Shape === 'pie') {
-				n.instance = Highcharts.chart(btoa(n.Name), {
+			if (n.shape === 'pie') {
+				n.instance = Highcharts.chart(btoa(n.name), {
 					chart: {
 						type: 'pie',
 						spacing: [0, -10, 0, -10]
 					},
-					colors: [n.Color, '#ededed'],
+					colors: [n.color, '#ededed'],
 					credits: {
 						enabled: false
 					},
@@ -270,27 +276,28 @@ document.getElementById(a).append(xls);
 						text: n.value,
 						floating: true,
 						align: 'center',
-						y: tt,
+						y: tt-6,
 						style: {
-							color: that.ColorReverse(n.Color),
+							color: that.ColorReverse(n.color),
 							'font-weight': 'bold',
 							'font-size': '24px'
 						}
 					},
 					subtitle: {
-						text: n.Name,
+						text: n.name,
 						floating: true,
 						align: 'center',
-						y: tt + 20,
+						y:20, //tt + 20,
 						style: {
-							color: '#4a4b2e', // '#dddf0d',
+							color: that.ColorReverse(n.color), // '#dddf0d',
 							'text-shadow': '1px 1px #fff',
 							'font-size': '16px'
 						}
 					},
 					plotOptions: {
 						pie: {
-							innerSize: tt,
+							innerSize: '75%',
+							size:'75%',
 							dataLabels: {
 								enabled: false
 							}
@@ -305,13 +312,13 @@ document.getElementById(a).append(xls);
 				});
 
 			} else {
-				n.instance = Highcharts.chart(btoa(n.Name), {
+				n.instance = Highcharts.chart(btoa(n.name), {
 					chart: {
 						type: 'line',
-						backgroundColor: n.Color,
+						backgroundColor: n.color,
 						spacing: [0, -10, 0, -10]
 					},
-					colors: [n.Color, '#ededed'],
+					colors: [n.color, '#ededed'],
 					credits: {
 						enabled: false
 					},
@@ -327,18 +334,18 @@ document.getElementById(a).append(xls);
 						align: 'center',
 						y: tt,
 						style: {
-							color: that.ColorReverse(n.Color),
+							color: that.ColorReverse(n.color),
 							'font-weight': 'bold',
 							'font-size': '28px'
 						}
 					},
 					subtitle: {
-						text: n.Name,
+						text: n.name,
 						floating: true,
 						align: 'center',
 						y: 20,
 						style: {
-							color: '#4a4b2e', // '#dddf0d',
+							color:that.ColorReverse(n.color), //'#4a4b2e', // '#dddf0d',
 							'text-shadow': '1px 1px #fff',
 							'font-size': '16px'
 						}
@@ -385,11 +392,18 @@ document.getElementById(a).append(xls);
 	info(container,data){
 		let that = this,
 				body = "";
-		
-			data.DataSet.map(n => {
+		document.getElementById(container).innerHTML="";
+		let a=[];
+		data.dataset.map(n=>{
+			let o={}
+			o[n['key']]=n['value'];
+			a.push(o)
+		})
+			a.map(n => {
 				let prop = Object.keys(n)[0],
 					value = n[prop];
-				if (value <= 5) {
+				if (value.indexOf('star')>-1) {
+					value=value.replace('star','')
 					body += that.template.desc_star(prop, +value)
 				} else {
 					body += that.template.desc_text(prop, value)
@@ -397,18 +411,89 @@ document.getElementById(a).append(xls);
 		
 		
 			})
-			document.getElementById(container).innerHTML = that.template.box(that.template.head(data.ImageURL),
-				body, that.template.foot(data.Description)
+			document.getElementById(container).innerHTML = that.template.box(that.template.head(data.imageurl,data.imageshape),
+				body, that.template.foot(data.description)
 			)
+			$('#'+container).find('img').load(function(){
+				let flc=$('#'+container).find('.fl-circle').eq(0);
+				flc.width(flc.height())
+			})
+			
+			
 		}
 		
 	
+	calendar(container,initDay,task={
+					'2019-12-28': [{
+							text: 'PM',
+							bgcolor: 'steelblue'
+						},
+						{
+							text: 'RUN',
+							bgcolor: 'green'
+						}
+					],
+					'2019-12-2': [{
+							text: 'IDLE',
+							bgcolor: 'gray'
+						},
+						{
+							text: 'RUN',
+							bgcolor: 'green'
+						}
+		
+					],
+				}){
+		
+		return new Calendar({
+			parent: container,
+			
+			time: initDay,
+			onDatePick(time, $el, calendar) {
+				Math.floor( Math.random()*2)?
+					
+				layer.open({
+				  type: 2,
+				  title: 'Pop-out',
+				  shadeClose: true,
+				  shade: 0.8,
+				  area: ['70%', '80%'],
+				  content: './summary.html' //iframe鐨剈rl
+				}):window.open('./summary.html','_blank')
+				
+			},
+			mounted(calendar) {
+			},
+			task() {
+				let o={};
+				task.map(n=>{
+					if(o[n.date]){
+						o[n.date].push({
+							'text':n.text||"",
+							'bgcolor':n.bgcolor||"",
+							'tooltip':n.tooltip||""
+							
+						})
+					}else{
+						o[n.date]=[{
+							'text':n.text||"",
+							'bgcolor':n.bgcolor||"",
+							'tooltip':n.tooltip||""
+							
+						}]
+						
+					}
+				})
+				return o
+			}
+		})
+	}
 	ColorReverse(OldColorValue) {
 		var OldColorValue = '0x' + OldColorValue.replace(/#/g, "");
 		var str = '000000' + (0xFFFFFF - OldColorValue).toString(16);
 		return '#' + str.substring(str.length - 6, str.length);
 	}
-	JSONToExcelConvertor(JSONData, FileName,format) {
+	JSONToExcelConvertor(JSONData, FileName) {
 	            //先转化json
 	            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
 	
@@ -434,9 +519,9 @@ document.getElementById(a).append(xls);
 	            excel += "</table>";
 	
 	            //console.log(excel);
-				 var meta={'xls':'application/vnd.ms-excel','csv':'text/csv'};
+				
 	            var excelFile = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>";
-	            excelFile += '<meta http-equiv="content-type" content="'+meta[format]+'; charset=UTF-8">';
+	            excelFile += '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
 	            // excelFile += '<meta http-equiv="content-type" content="'+meta[format];
 	            // excelFile += '; charset=UTF-8">';
 	            excelFile += "<head>";
@@ -466,13 +551,13 @@ document.getElementById(a).append(xls);
 	
 	            excelFile += "</html>";
 	
-	            var uri = 'data:'+meta[format]+';charset=utf-8,' + encodeURIComponent(excelFile);
+	            var uri = 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(excelFile);
 	
 	            var link = document.createElement("a");
 	            link.href = uri;
 	
 	            link.style = "visibility:hidden";
-	            link.download = FileName + "."+format;
+	            link.download = FileName + ".xlsx";
 	
 	            document.body.appendChild(link);
 	            link.click();
